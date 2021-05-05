@@ -1,0 +1,21 @@
+{
+  "name": "transformer",
+  "version": "1.0.0",
+  "description": "Coordinate transformation library",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "docs": "node scripts/generate_docs.js",
+    "build": "npm run test -s && npm run docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Jonathan D. B. Van Schenck",
+  "license": "MIT",
+  "devDependencies": {
+    "jsdoc-to-markdown": "^6.0.1",
+    "mocha": "^8.3.2"
+  }
+}
