@@ -4,7 +4,8 @@ const {
   quat_mult,
   quat_wrap_ip, quat_wrap_ip_inv,
   quat_wrap, quat_wrap_inv,
-  UnitQuaternion 
+  UnitQuaternion,
+  format
 } = require('../lib/quaternion.js');
 
 function vec_equal(a,b,msg) {
@@ -322,6 +323,30 @@ describe("UnitQuaternion inverse operations", () => {
         vvv = quat.unrotate( vv );
         vec_equal( vvv, v, `inverse for : ${JSON.stringify(q)}, ${JSON.stringify(v)}`);
       }
+    }
+    done();
+  });
+});
+
+
+describe("String formatting", () => {
+  
+  it("Basic formatting no sign", (done) => {
+    for (let [num, exp] of [
+      [ 0.123, "0.123"],
+      [ 0.11234, "0.1123"]
+    ]) {
+      assert.strictEqual(exp, format(num, 4, undefined, true));
+    }
+    done();
+  });
+
+  it("Basic formatting with sign", (done) => {
+    for (let [num, exp] of [
+      [ 0.1, "+ 0.1"],
+      [ -0.1, "- 0.1"]
+    ]) {
+      assert.strictEqual( exp, format(num, 3));
     }
     done();
   });

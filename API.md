@@ -75,20 +75,27 @@ group in 3 dimensions.
             * [.j](#module_quaternion..UnitQuaternion+j) ⇒ <code>number</code>
             * [.k](#module_quaternion..UnitQuaternion+k) ⇒ <code>number</code>
             * [.qvec](#module_quaternion..UnitQuaternion+qvec) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.json](#module_quaternion..UnitQuaternion+json) ⇒ <code>Object</code>
             * [.set_vec(qvec)](#module_quaternion..UnitQuaternion+set_vec) ⇒ <code>this</code>
             * [.set_axis(angle, vec)](#module_quaternion..UnitQuaternion+set_axis) ⇒ <code>this</code>
             * [.set_euler(yaw, pitch, roll)](#module_quaternion..UnitQuaternion+set_euler) ⇒ <code>this</code>
+            * [.set_as_before(other)](#module_quaternion..UnitQuaternion+set_as_before) ⇒ <code>this</code>
+            * [.set_as_after(other)](#module_quaternion..UnitQuaternion+set_as_after) ⇒ <code>this</code>
             * [.set_as_composite(first, second)](#module_quaternion..UnitQuaternion+set_as_composite) ⇒ <code>this</code>
             * [.mult(other)](#module_quaternion..UnitQuaternion+mult) ⇒ <code>UnitQuaternion</code>
-            * [.then(other)](#module_quaternion..UnitQuaternion+then) ⇒ <code>UnitQuaternion</code>
+            * [.after(other)](#module_quaternion..UnitQuaternion+after) ⇒ <code>UnitQuaternion</code>
+            * [.before(other)](#module_quaternion..UnitQuaternion+before) ⇒ <code>UnitQuaternion</code>
             * [.rotate(vec)](#module_quaternion..UnitQuaternion+rotate) ⇒ <code>Array.&lt;number&gt;</code>
             * [.unrotate(vec)](#module_quaternion..UnitQuaternion+unrotate) ⇒ <code>Array.&lt;number&gt;</code>
             * [.rotate_ip(vec)](#module_quaternion..UnitQuaternion+rotate_ip) ⇒ <code>undefined</code>
             * [.unrotate_ip(vec)](#module_quaternion..UnitQuaternion+unrotate_ip) ⇒ <code>undefined</code>
+            * [.toString()](#module_quaternion..UnitQuaternion+toString) ⇒ <code>string</code>
         * _static_
             * [.from_vec(qvec)](#module_quaternion..UnitQuaternion.from_vec) ⇒ <code>UnitQuaternion</code>
             * [.from_axis(angle, vec)](#module_quaternion..UnitQuaternion.from_axis) ⇒ <code>UnitQuaternion</code>
             * [.from_euler(obj)](#module_quaternion..UnitQuaternion.from_euler) ⇒ <code>UnitQuaternion</code>
+            * [.from_json(obj)](#module_quaternion..UnitQuaternion.from_json) ⇒ <code>UnitQuaternion</code>
+    * [~cap_precision(value, cap)](#module_quaternion..cap_precision) ⇒ <code>string</code>
 
 <a name="module_quaternion..UnitQuaternion"></a>
 
@@ -104,20 +111,26 @@ A quaternion class for rotating 3d vectors
         * [.j](#module_quaternion..UnitQuaternion+j) ⇒ <code>number</code>
         * [.k](#module_quaternion..UnitQuaternion+k) ⇒ <code>number</code>
         * [.qvec](#module_quaternion..UnitQuaternion+qvec) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.json](#module_quaternion..UnitQuaternion+json) ⇒ <code>Object</code>
         * [.set_vec(qvec)](#module_quaternion..UnitQuaternion+set_vec) ⇒ <code>this</code>
         * [.set_axis(angle, vec)](#module_quaternion..UnitQuaternion+set_axis) ⇒ <code>this</code>
         * [.set_euler(yaw, pitch, roll)](#module_quaternion..UnitQuaternion+set_euler) ⇒ <code>this</code>
+        * [.set_as_before(other)](#module_quaternion..UnitQuaternion+set_as_before) ⇒ <code>this</code>
+        * [.set_as_after(other)](#module_quaternion..UnitQuaternion+set_as_after) ⇒ <code>this</code>
         * [.set_as_composite(first, second)](#module_quaternion..UnitQuaternion+set_as_composite) ⇒ <code>this</code>
         * [.mult(other)](#module_quaternion..UnitQuaternion+mult) ⇒ <code>UnitQuaternion</code>
-        * [.then(other)](#module_quaternion..UnitQuaternion+then) ⇒ <code>UnitQuaternion</code>
+        * [.after(other)](#module_quaternion..UnitQuaternion+after) ⇒ <code>UnitQuaternion</code>
+        * [.before(other)](#module_quaternion..UnitQuaternion+before) ⇒ <code>UnitQuaternion</code>
         * [.rotate(vec)](#module_quaternion..UnitQuaternion+rotate) ⇒ <code>Array.&lt;number&gt;</code>
         * [.unrotate(vec)](#module_quaternion..UnitQuaternion+unrotate) ⇒ <code>Array.&lt;number&gt;</code>
         * [.rotate_ip(vec)](#module_quaternion..UnitQuaternion+rotate_ip) ⇒ <code>undefined</code>
         * [.unrotate_ip(vec)](#module_quaternion..UnitQuaternion+unrotate_ip) ⇒ <code>undefined</code>
+        * [.toString()](#module_quaternion..UnitQuaternion+toString) ⇒ <code>string</code>
     * _static_
         * [.from_vec(qvec)](#module_quaternion..UnitQuaternion.from_vec) ⇒ <code>UnitQuaternion</code>
         * [.from_axis(angle, vec)](#module_quaternion..UnitQuaternion.from_axis) ⇒ <code>UnitQuaternion</code>
         * [.from_euler(obj)](#module_quaternion..UnitQuaternion.from_euler) ⇒ <code>UnitQuaternion</code>
+        * [.from_json(obj)](#module_quaternion..UnitQuaternion.from_json) ⇒ <code>UnitQuaternion</code>
 
 <a name="module_quaternion..UnitQuaternion+re"></a>
 
@@ -149,6 +162,15 @@ Get k component of quaternion
 Get vector form of quaternion
 
 Note the convention is `[ re, i, j, k ]`
+
+**Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+<a name="module_quaternion..UnitQuaternion+json"></a>
+
+#### unitQuaternion.json ⇒ <code>Object</code>
+Get the json object of this quaternion
+
+Will return an object of the form:
+`{ re, i, j, k }`
 
 **Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
 <a name="module_quaternion..UnitQuaternion+set_vec"></a>
@@ -192,6 +214,28 @@ Set euler angles of rotation
 | pitch | <code>number</code> | rotation around "right" |
 | roll | <code>number</code> | rotation around "forward" |
 
+<a name="module_quaternion..UnitQuaternion+set_as_before"></a>
+
+#### unitQuaternion.set\_as\_before(other) ⇒ <code>this</code>
+Mutate this quaternion to be the composite of `this` before `other`
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>UnitQuaternion</code> | the 'post-applied' rotation |
+
+<a name="module_quaternion..UnitQuaternion+set_as_after"></a>
+
+#### unitQuaternion.set\_as\_after(other) ⇒ <code>this</code>
+Mutate this quaternion to be the composite of `this` after `other`
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>UnitQuaternion</code> | the 'pre-applied' rotation |
+
 <a name="module_quaternion..UnitQuaternion+set_as_composite"></a>
 
 #### unitQuaternion.set\_as\_composite(first, second) ⇒ <code>this</code>
@@ -218,21 +262,37 @@ multiplier and `other` is the multiplicand.
 | --- | --- | --- |
 | other | <code>UnitQuaternion</code> | the multiplicand |
 
-<a name="module_quaternion..UnitQuaternion+then"></a>
+<a name="module_quaternion..UnitQuaternion+after"></a>
 
-#### unitQuaternion.then(other) ⇒ <code>UnitQuaternion</code>
-Compose with another quaternion
+#### unitQuaternion.after(other) ⇒ <code>UnitQuaternion</code>
+Compose with another quaternion, `this` after `other`
+
+This returns a quaternion which is equivalent
+to first rotating by `other` and second rotating
+by `this`.
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+**Returns**: <code>UnitQuaternion</code> - - the composite rotation of `other` then `this`  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>UnitQuaternion</code> | the 'pre-applied' rotation |
+
+<a name="module_quaternion..UnitQuaternion+before"></a>
+
+#### unitQuaternion.before(other) ⇒ <code>UnitQuaternion</code>
+Compose with another quaternion, `this` before `other`
 
 This returns a quaternion which is equivalent
 to first rotating by `this` and second rotating
 by `other`.
 
 **Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
-**Returns**: <code>UnitQuaternion</code> - - the composite rotation  
+**Returns**: <code>UnitQuaternion</code> - - the composite rotation of `this` then `other`  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| other | <code>UnitQuaternion</code> | the second rotation to apply |
+| other | <code>UnitQuaternion</code> | the 'post-applied' rotation |
 
 <a name="module_quaternion..UnitQuaternion+rotate"></a>
 
@@ -280,6 +340,12 @@ Undoes a rotation of a 3d vector with this quaternion in place
 | --- | --- | --- |
 | vec | <code>Array.&lt;number&gt;</code> | the vector to unrotate in place (must be length 3) |
 
+<a name="module_quaternion..UnitQuaternion+toString"></a>
+
+#### unitQuaternion.toString() ⇒ <code>string</code>
+Get an approximate string representation
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
 <a name="module_quaternion..UnitQuaternion.from_vec"></a>
 
 #### UnitQuaternion.from\_vec(qvec) ⇒ <code>UnitQuaternion</code>
@@ -317,12 +383,43 @@ TODO : explain sign convention
 
 **Kind**: static method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
 
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| obj | <code>Object</code> |  | object containing euler angles |
+| [obj.yaw] | <code>number</code> | <code>0.0</code> | rotation around "up" |
+| [obj.pitch] | <code>number</code> | <code>0.0</code> | rotation around "right" |
+| [obj.roll] | <code>number</code> | <code>0.0</code> | rotation around "forward" |
+
+<a name="module_quaternion..UnitQuaternion.from_json"></a>
+
+#### UnitQuaternion.from\_json(obj) ⇒ <code>UnitQuaternion</code>
+Construct quaterion from json object
+
+Note, the quaternion will be normalized if not already. At
+least one of the configuration parameters (`re, i, j, k`)
+must be given, otherwise the constructor will fail
+
+**Kind**: static method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| obj | <code>Object</code> |  | the json object |
+| [obj.re] | <code>number</code> | <code>0.0</code> | the real part |
+| [obj.i] | <code>number</code> | <code>0.0</code> | the i component |
+| [obj.j] | <code>number</code> | <code>0.0</code> | the j component |
+| [obj.k] | <code>number</code> | <code>0.0</code> | the k component |
+
+<a name="module_quaternion..cap_precision"></a>
+
+### quaternion~cap\_precision(value, cap) ⇒ <code>string</code>
+Cap a number at a certain precision
+
+**Kind**: inner method of [<code>quaternion</code>](#module_quaternion)  
+
 | Param | Type | Description |
 | --- | --- | --- |
-| obj | <code>Object</code> | object containing euler angles |
-| obj.yaw | <code>number</code> | rotation around "up" |
-| obj.pitch | <code>number</code> | rotation around "right" |
-| obj.roll | <code>number</code> | rotation around "forward" |
+| value | <code>number</code> | number to cap |
+| cap | <code>number</code> | maximum number of decimal places |
 
 <a name="module_shift"></a>
 
@@ -337,7 +434,7 @@ Shift objects for shifting 3d vectors. This is single cover of T(3), the transla
             * [.set_vec(vec)](#module_shift..Shift+set_vec) ⇒ <code>this</code>
             * [.set_as_composite(first, second)](#module_shift..Shift+set_as_composite) ⇒ <code>this</code>
             * [.add(other)](#module_shift..Shift+add) ⇒ <code>Shift</code>
-            * [.then(other)](#module_shift..Shift+then) ⇒ <code>Shift</code>
+            * [.after(other)](#module_shift..Shift+after) ⇒ <code>Shift</code>
             * [.shift(vec)](#module_shift..Shift+shift) ⇒ <code>Array.&lt;number&gt;</code>
             * [.shift_ip(vec)](#module_shift..Shift+shift_ip) ⇒ <code>undefined</code>
             * [.unshift(vec)](#module_shift..Shift+unshift) ⇒ <code>Array.&lt;number&gt;</code>
@@ -358,7 +455,7 @@ A shift object for shifting 3d vectors
         * [.set_vec(vec)](#module_shift..Shift+set_vec) ⇒ <code>this</code>
         * [.set_as_composite(first, second)](#module_shift..Shift+set_as_composite) ⇒ <code>this</code>
         * [.add(other)](#module_shift..Shift+add) ⇒ <code>Shift</code>
-        * [.then(other)](#module_shift..Shift+then) ⇒ <code>Shift</code>
+        * [.after(other)](#module_shift..Shift+after) ⇒ <code>Shift</code>
         * [.shift(vec)](#module_shift..Shift+shift) ⇒ <code>Array.&lt;number&gt;</code>
         * [.shift_ip(vec)](#module_shift..Shift+shift_ip) ⇒ <code>undefined</code>
         * [.unshift(vec)](#module_shift..Shift+unshift) ⇒ <code>Array.&lt;number&gt;</code>
@@ -407,9 +504,9 @@ Add this shift with another shift
 | --- | --- | --- |
 | other | <code>Shift</code> | the other shift to compose with |
 
-<a name="module_shift..Shift+then"></a>
+<a name="module_shift..Shift+after"></a>
 
-#### shift.then(other) ⇒ <code>Shift</code>
+#### shift.after(other) ⇒ <code>Shift</code>
 Alias for `.add`
 
 **Kind**: instance method of [<code>Shift</code>](#module_shift..Shift)  
