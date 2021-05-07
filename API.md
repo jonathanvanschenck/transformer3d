@@ -1,7 +1,70 @@
+## Modules
+
+<dl>
+<dt><a href="#module_euclidean">euclidean</a></dt>
+<dd><p>Euclidean objects for roto-translations of 3d vectors. This is a double cover of of SE(3), the
+special Euclidean group in 3 dimensions.</p>
+</dd>
+<dt><a href="#module_quaternion">quaternion</a></dt>
+<dd><p>Quaternion objects for rotation of 3d vectors. This is double cover of SO(3), the special orthogonal
+group in 3 dimensions.</p>
+</dd>
+<dt><a href="#module_shift">shift</a></dt>
+<dd><p>Shift objects for shifting 3d vectors. This is single cover of T(3), the translation group in 3 dimensions.</p>
+</dd>
+<dt><a href="#module_transform">transform</a></dt>
+<dd><p>Transformation objects for coordinate transformations of 3d vectors</p>
+</dd>
+</dl>
+
+<a name="module_euclidean"></a>
+
+## euclidean
+Euclidean objects for roto-translations of 3d vectors. This is a double cover of of SE(3), the
+special Euclidean group in 3 dimensions.
+
+
+* [euclidean](#module_euclidean)
+    * [~Euclidean](#module_euclidean..Euclidean)
+        * [.translation](#module_euclidean..Euclidean+translation) ⇒ <code>Array.&lt;number&gt;</code>
+    * [~EuclideanReverse](#module_euclidean..EuclideanReverse)
+        * [.translation](#module_euclidean..EuclideanReverse+translation) ⇒ <code>Array.&lt;number&gt;</code>
+
+<a name="module_euclidean..Euclidean"></a>
+
+### euclidean~Euclidean
+Euclidean (roto-translation) objects for 3d vectors
+
+Note, this rotates first, then shifts
+
+**Kind**: inner class of [<code>euclidean</code>](#module_euclidean)  
+<a name="module_euclidean..Euclidean+translation"></a>
+
+#### euclidean.translation ⇒ <code>Array.&lt;number&gt;</code>
+Get the effective shift post rotation
+
+**Kind**: instance property of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
+**Returns**: <code>Array.&lt;number&gt;</code> - 3d vector of shift  
+<a name="module_euclidean..EuclideanReverse"></a>
+
+### euclidean~EuclideanReverse
+Reverse Euclidean (roto-translation) objects for 3d vectors
+
+Note, this shifts first then rotates
+
+**Kind**: inner class of [<code>euclidean</code>](#module_euclidean)  
+<a name="module_euclidean..EuclideanReverse+translation"></a>
+
+#### euclideanReverse.translation ⇒ <code>Array.&lt;number&gt;</code>
+Get the effective shift post rotation
+
+**Kind**: instance property of [<code>EuclideanReverse</code>](#module_euclidean..EuclideanReverse)  
+**Returns**: <code>Array.&lt;number&gt;</code> - 3d vector of shift  
 <a name="module_quaternion"></a>
 
 ## quaternion
-Quaternion objects for rotation of 3d vectors
+Quaternion objects for rotation of 3d vectors. This is double cover of SO(3), the special orthogonal
+group in 3 dimensions.
 
 
 * [quaternion](#module_quaternion)
@@ -19,14 +82,13 @@ Quaternion objects for rotation of 3d vectors
             * [.mult(other)](#module_quaternion..UnitQuaternion+mult) ⇒ <code>UnitQuaternion</code>
             * [.then(other)](#module_quaternion..UnitQuaternion+then) ⇒ <code>UnitQuaternion</code>
             * [.rotate(vec)](#module_quaternion..UnitQuaternion+rotate) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.unrotate(vec)](#module_quaternion..UnitQuaternion+unrotate) ⇒ <code>Array.&lt;number&gt;</code>
             * [.rotate_ip(vec)](#module_quaternion..UnitQuaternion+rotate_ip) ⇒ <code>undefined</code>
+            * [.unrotate_ip(vec)](#module_quaternion..UnitQuaternion+unrotate_ip) ⇒ <code>undefined</code>
         * _static_
             * [.from_vec(qvec)](#module_quaternion..UnitQuaternion.from_vec) ⇒ <code>UnitQuaternion</code>
             * [.from_axis(angle, vec)](#module_quaternion..UnitQuaternion.from_axis) ⇒ <code>UnitQuaternion</code>
             * [.from_euler(obj)](#module_quaternion..UnitQuaternion.from_euler) ⇒ <code>UnitQuaternion</code>
-    * [~quat_mult(a, b, c)](#module_quaternion..quat_mult) ⇒ <code>undefined</code>
-    * [~quat_wrap(q, v_out, v_in, c)](#module_quaternion..quat_wrap) ⇒ <code>undefined</code>
-    * [~quat_wrap_ip(q, v, c)](#module_quaternion..quat_wrap_ip) ⇒ <code>undefined</code>
 
 <a name="module_quaternion..UnitQuaternion"></a>
 
@@ -49,7 +111,9 @@ A quaternion class for rotating 3d vectors
         * [.mult(other)](#module_quaternion..UnitQuaternion+mult) ⇒ <code>UnitQuaternion</code>
         * [.then(other)](#module_quaternion..UnitQuaternion+then) ⇒ <code>UnitQuaternion</code>
         * [.rotate(vec)](#module_quaternion..UnitQuaternion+rotate) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.unrotate(vec)](#module_quaternion..UnitQuaternion+unrotate) ⇒ <code>Array.&lt;number&gt;</code>
         * [.rotate_ip(vec)](#module_quaternion..UnitQuaternion+rotate_ip) ⇒ <code>undefined</code>
+        * [.unrotate_ip(vec)](#module_quaternion..UnitQuaternion+unrotate_ip) ⇒ <code>undefined</code>
     * _static_
         * [.from_vec(qvec)](#module_quaternion..UnitQuaternion.from_vec) ⇒ <code>UnitQuaternion</code>
         * [.from_axis(angle, vec)](#module_quaternion..UnitQuaternion.from_axis) ⇒ <code>UnitQuaternion</code>
@@ -182,6 +246,18 @@ Rotate a 3d vector with this quaternion
 | --- | --- | --- |
 | vec | <code>Array.&lt;number&gt;</code> | the vector to rotate (must be length 3) |
 
+<a name="module_quaternion..UnitQuaternion+unrotate"></a>
+
+#### unitQuaternion.unrotate(vec) ⇒ <code>Array.&lt;number&gt;</code>
+Undoes a rotation of a 3d vector with this quaterion
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+**Returns**: <code>Array.&lt;number&gt;</code> - - the unrotated vector  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| vec | <code>Array.&lt;number&gt;</code> | the vector to unrotate (must be length 3) |
+
 <a name="module_quaternion..UnitQuaternion+rotate_ip"></a>
 
 #### unitQuaternion.rotate\_ip(vec) ⇒ <code>undefined</code>
@@ -192,6 +268,17 @@ Rotate a 3d vector with this quaternion in place
 | Param | Type | Description |
 | --- | --- | --- |
 | vec | <code>Array.&lt;number&gt;</code> | the vector to rotate in place (must be length 3) |
+
+<a name="module_quaternion..UnitQuaternion+unrotate_ip"></a>
+
+#### unitQuaternion.unrotate\_ip(vec) ⇒ <code>undefined</code>
+Undoes a rotation of a 3d vector with this quaternion in place
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| vec | <code>Array.&lt;number&gt;</code> | the vector to unrotate in place (must be length 3) |
 
 <a name="module_quaternion..UnitQuaternion.from_vec"></a>
 
@@ -237,56 +324,166 @@ TODO : explain sign convention
 | obj.pitch | <code>number</code> | rotation around "right" |
 | obj.roll | <code>number</code> | rotation around "forward" |
 
-<a name="module_quaternion..quat_mult"></a>
+<a name="module_shift"></a>
 
-### quaternion~quat\_mult(a, b, c) ⇒ <code>undefined</code>
-Apply quaternion multipliction
+## shift
+Shift objects for shifting 3d vectors. This is single cover of T(3), the translation group in 3 dimensions.
 
-Note, this function will write into `c` the result of `a*b`. The 
-convention is `[ re, i, j, k ]`.
 
-**Kind**: inner method of [<code>quaternion</code>](#module_quaternion)  
+* [shift](#module_shift)
+    * [~Shift](#module_shift..Shift)
+        * _instance_
+            * [.vec](#module_shift..Shift+vec) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.set_vec(vec)](#module_shift..Shift+set_vec) ⇒ <code>this</code>
+            * [.set_as_composite(first, second)](#module_shift..Shift+set_as_composite) ⇒ <code>this</code>
+            * [.add(other)](#module_shift..Shift+add) ⇒ <code>Shift</code>
+            * [.then(other)](#module_shift..Shift+then) ⇒ <code>Shift</code>
+            * [.shift(vec)](#module_shift..Shift+shift) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.shift_ip(vec)](#module_shift..Shift+shift_ip) ⇒ <code>undefined</code>
+            * [.unshift(vec)](#module_shift..Shift+unshift) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.unshift_ip(vec)](#module_shift..Shift+unshift_ip) ⇒ <code>undefined</code>
+        * _static_
+            * [.from_vec(vec)](#module_shift..Shift.from_vec) ⇒ <code>Shift</code>
+
+<a name="module_shift..Shift"></a>
+
+### shift~Shift
+A shift object for shifting 3d vectors
+
+**Kind**: inner class of [<code>shift</code>](#module_shift)  
+
+* [~Shift](#module_shift..Shift)
+    * _instance_
+        * [.vec](#module_shift..Shift+vec) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.set_vec(vec)](#module_shift..Shift+set_vec) ⇒ <code>this</code>
+        * [.set_as_composite(first, second)](#module_shift..Shift+set_as_composite) ⇒ <code>this</code>
+        * [.add(other)](#module_shift..Shift+add) ⇒ <code>Shift</code>
+        * [.then(other)](#module_shift..Shift+then) ⇒ <code>Shift</code>
+        * [.shift(vec)](#module_shift..Shift+shift) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.shift_ip(vec)](#module_shift..Shift+shift_ip) ⇒ <code>undefined</code>
+        * [.unshift(vec)](#module_shift..Shift+unshift) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.unshift_ip(vec)](#module_shift..Shift+unshift_ip) ⇒ <code>undefined</code>
+    * _static_
+        * [.from_vec(vec)](#module_shift..Shift.from_vec) ⇒ <code>Shift</code>
+
+<a name="module_shift..Shift+vec"></a>
+
+#### shift.vec ⇒ <code>Array.&lt;number&gt;</code>
+Get the shift vector
+
+**Kind**: instance property of [<code>Shift</code>](#module_shift..Shift)  
+<a name="module_shift..Shift+set_vec"></a>
+
+#### shift.set\_vec(vec) ⇒ <code>this</code>
+Set the shift vector
+
+**Kind**: instance method of [<code>Shift</code>](#module_shift..Shift)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| a | <code>Array.&lt;number&gt;</code> | quaternion vector multiplier (must be length 4) |
-| b | <code>Array.&lt;number&gt;</code> | quaternion vector multiplicand (must be length 4) |
-| c | <code>Array.&lt;number&gt;</code> | quaternion vector product (must be length 4) |
+| vec | <code>Array.&lt;number&gt;</code> | vector to shift with (must be length 3) |
 
-<a name="module_quaternion..quat_wrap"></a>
+<a name="module_shift..Shift+set_as_composite"></a>
 
-### quaternion~quat\_wrap(q, v_out, v_in, c) ⇒ <code>undefined</code>
-Apply a quaternion rotation to a vector
+#### shift.set\_as\_composite(first, second) ⇒ <code>this</code>
+Mutate this shift to be the composite of two shifts
 
-Note that both `v_out` and `c` are mutated by this fuction. This
-function writes into `v_out` the result of `q^-1 * [0,v_in] * q`.
-The conventions are `[ re, i, j, k]` for quaternion vectors 
-and `[ x, y, z ]` for 3d vectors
-
-**Kind**: inner method of [<code>quaternion</code>](#module_quaternion)  
+**Kind**: instance method of [<code>Shift</code>](#module_shift..Shift)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| q | <code>Array.&lt;number&gt;</code> | unit quaterion to rotate with (must be length 4, and normalized) |
-| v_out | <code>Array.&lt;number&gt;</code> | 3d vector to rotate (must be length 3) |
-| v_in | <code>Array.&lt;number&gt;</code> | rotated 3d vector (must be length 3) |
-| c | <code>Array.&lt;number&gt;</code> | working space for operation (must be length 4) |
+| first | <code>Shift</code> | the shift to apply first |
+| second | <code>Shift</code> | the shift to apply second |
 
-<a name="module_quaternion..quat_wrap_ip"></a>
+<a name="module_shift..Shift+add"></a>
 
-### quaternion~quat\_wrap\_ip(q, v, c) ⇒ <code>undefined</code>
-Apply a quaternion rotation to a vector in place
+#### shift.add(other) ⇒ <code>Shift</code>
+Add this shift with another shift
 
-Note that both `v` and `c` are mutated by this fuction. This
-function writes into `v` the result of `q^-1 * [0,v] * q`.
-The conventions are `[ re, i, j, k]` for quaternion vectors 
-and `[ x, y, z ]` for 3d vectors
-
-**Kind**: inner method of [<code>quaternion</code>](#module_quaternion)  
+**Kind**: instance method of [<code>Shift</code>](#module_shift..Shift)  
+**Returns**: <code>Shift</code> - the resultant composite shift  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| q | <code>Array.&lt;number&gt;</code> | unit quaterion to rotate with (must be length 4) |
-| v | <code>Array.&lt;number&gt;</code> | 3d vector to rotate in place (must be length 3) |
-| c | <code>Array.&lt;number&gt;</code> | working space for operation (must be length 4) |
+| other | <code>Shift</code> | the other shift to compose with |
 
+<a name="module_shift..Shift+then"></a>
+
+#### shift.then(other) ⇒ <code>Shift</code>
+Alias for `.add`
+
+**Kind**: instance method of [<code>Shift</code>](#module_shift..Shift)  
+**Returns**: <code>Shift</code> - the resultant composite shift  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>Shift</code> | the other shift to compose with |
+
+<a name="module_shift..Shift+shift"></a>
+
+#### shift.shift(vec) ⇒ <code>Array.&lt;number&gt;</code>
+Shift a 3d vector
+
+**Kind**: instance method of [<code>Shift</code>](#module_shift..Shift)  
+**Returns**: <code>Array.&lt;number&gt;</code> - the shifted vector  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| vec | <code>Array.&lt;number&gt;</code> | the vector to shift (must be length 3) |
+
+<a name="module_shift..Shift+shift_ip"></a>
+
+#### shift.shift\_ip(vec) ⇒ <code>undefined</code>
+Shift a 3d vector in place
+
+**Kind**: instance method of [<code>Shift</code>](#module_shift..Shift)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| vec | <code>Array.&lt;number&gt;</code> | the vector to shift in place (must be length 3) |
+
+<a name="module_shift..Shift+unshift"></a>
+
+#### shift.unshift(vec) ⇒ <code>Array.&lt;number&gt;</code>
+Undo the shift of a 3d vector
+
+**Kind**: instance method of [<code>Shift</code>](#module_shift..Shift)  
+**Returns**: <code>Array.&lt;number&gt;</code> - the unshifted vector  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| vec | <code>Array.&lt;number&gt;</code> | the vector to unshift (must be length 3) |
+
+<a name="module_shift..Shift+unshift_ip"></a>
+
+#### shift.unshift\_ip(vec) ⇒ <code>undefined</code>
+Undo the shift of a 3d vector in place
+
+**Kind**: instance method of [<code>Shift</code>](#module_shift..Shift)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| vec | <code>Array.&lt;number&gt;</code> | the vector to unshift (must be length 3) |
+
+<a name="module_shift..Shift.from_vec"></a>
+
+#### Shift.from\_vec(vec) ⇒ <code>Shift</code>
+Construct a shift from a vector
+
+**Kind**: static method of [<code>Shift</code>](#module_shift..Shift)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| vec | <code>Array.&lt;number&gt;</code> | vector to shift with (must be length 3) |
+
+<a name="module_transform"></a>
+
+## transform
+Transformation objects for coordinate transformations of 3d vectors
+
+<a name="module_transform..Transform"></a>
+
+### transform~Transform
+Abstract base class for cooridnate transformation
+
+**Kind**: inner class of [<code>transform</code>](#module_transform)  

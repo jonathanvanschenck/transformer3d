@@ -1,10 +1,15 @@
 const assert = require('assert');
 
-const { quat_mult, quat_wrap_ip, quat_wrap, UnitQuaternion } = require('../lib/quaternion.js');
+const { 
+  quat_mult,
+  quat_wrap_ip, quat_wrap_ip_inv,
+  quat_wrap, quat_wrap_inv,
+  UnitQuaternion 
+} = require('../lib/quaternion.js');
 
-function vec_equal(a,b) {
+function vec_equal(a,b,msg) {
   for (let i = 0; i < a.length; i++) 
-    if (Math.abs(a[i]-b[i]) > 1e-9) assert.fail();
+    if (Math.abs(a[i]-b[i]) > 1e-9) assert.fail(msg ? msg : "");
 }
 
 
@@ -254,4 +259,70 @@ describe("UnitQuaternion Mutations", () => {
     done();
   });
 
+});
+
+
+describe("Quaternion vector inverse operations", () => {
+  
+  let isqrt2 = 1/Math.sqrt(2);
+
+  it("In place inverse works", (done) => {
+    let c = [0, 0, 0, 0];
+    for ( let q of [[1,0,0,0], [isqrt2,0,isqrt2,0], [0.5,0.5,0.5,0.5]] ) {
+      for ( let v of [[1,0,0],[0,2,0],[1,1,1]] ) {
+        let vv = [ v[0], v[1], v[2] ];
+        quat_wrap_ip( q, v, c );
+        quat_wrap_ip_inv( q, v, c );
+        vec_equal( vv, v, `inverse for : ${JSON.stringify(q)} -> ${JSON.stringify(vv)}`);
+      }
+    }
+    done();
+  });
+
+  it("inverse works", (done) => {
+    let c = [0, 0, 0, 0];
+    let vv = [ 0, 0, 0 ];
+    let vvv = [ 0, 0, 0 ];
+    for ( let q of [[1,0,0,0], [isqrt2,0,isqrt2,0], [0.5,0.5,0.5,0.5]] ) {
+      for ( let v of [[1,0,0],[0,2,0],[1,1,1]] ) {
+        quat_wrap( q, v, vv, c );
+        quat_wrap_inv( q, vv, vvv, c );
+        vec_equal( vvv, v, `inverse for : ${JSON.stringify(q)}, ${JSON.stringify(v)}`);
+      }
+    }
+    done();
+  });
+});
+
+describe("UnitQuaternion inverse operations", () => {
+  
+  let isqrt2 = 1/Math.sqrt(2);
+  let quat = new UnitQuaternion();
+
+  it("In place inverse works", (done) => {
+    for ( let q of [[1,0,0,0], [isqrt2,0,isqrt2,0], [0.5,0.5,0.5,0.5]] ) {
+      quat.set_vec( q );
+      for ( let v of [[1,0,0],[0,2,0],[1,1,1]] ) {
+        let vv = [ v[0], v[1], v[2] ];
+        quat.rotate_ip( v );
+        quat.unrotate_ip( v );
+        vec_equal( vv, v, `inverse for : ${JSON.stringify(q)} -> ${JSON.stringify(vv)}`);
+      }
+    }
+    done();
+  });
+
+  it("inverse works", (done) => {
+    let vv = [ 0, 0, 0 ];
+    let vvv = [ 0, 0, 0 ];
+    for ( let q of [[1,0,0,0], [isqrt2,0,isqrt2,0], [0.5,0.5,0.5,0.5]] ) {
+      quat.set_vec( q );
+      for ( let v of [[1,0,0],[0,2,0],[1,1,1]] ) {
+        vv = quat.rotate( v );
+        vvv = quat.unrotate( vv );
+        vec_equal( vvv, v, `inverse for : ${JSON.stringify(q)}, ${JSON.stringify(v)}`);
+      }
+    }
+    done();
+  });
 });
