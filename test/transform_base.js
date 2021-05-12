@@ -68,13 +68,13 @@ describe("Static Euclidean Transforms", () => {
     let vec = [ 0, 1, 0];
 
     let s = new ShiftStaticTransform( [ 1, 0, 1] );
-    vec_equal( s.transform(vec), [1, 1, 1], "shift");
+    vec_equal( s.transform_vec(vec), [1, 1, 1], "shift");
 
     let r = new RotateStaticTransform( [ 0, 1, 0, 0 ] );
-    vec_equal( r.transform(vec), [ 0, -1, 0 ], "rotate" );
+    vec_equal( r.transform_vec(vec), [ 0, -1, 0 ], "rotate" );
 
     let e = new EuclideanStaticTransform( [0, 1, 0 , 0], [1, 1, 1]);
-    vec_equal( e.transform(vec), [ 1, 0, 1 ], "euclidean" );
+    vec_equal( e.transform_vec(vec), [ 1, 0, 1 ], "euclidean" );
 
     done();
   });

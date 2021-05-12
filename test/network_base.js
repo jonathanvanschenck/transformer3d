@@ -7,10 +7,16 @@ const {
 } = require('../lib/network.js');
 
 const t = require('../lib/transform.js');
+const UQ = require('../lib/quaternion.js').UnitQuaternion;
 
 function vec_equal(a,b,msg) {
   for (let i = 0; i < a.length; i++) 
     if (a[i] !== b[i]) assert.fail(msg ? msg : "");
+}
+
+function vec_equal_approx (a, b, msg) {
+  for (let i = 0; i < a.length; i++) 
+    if (Math.abs(a[i] - b[i]) > 1e-9) assert.fail(msg ? msg : "");
 }
 
 
@@ -73,7 +79,7 @@ describe("Coordinate Network Constructors", () => {
 });
 
 
-describe("Coordinate Transformations", () => {
+describe("Vector Transformations with Networks", () => {
   
   let n = (new CoordinateNetwork())
        .connect_systems("a", new t.ShiftStaticTransform([1,0,0]), "b")
@@ -85,33 +91,33 @@ describe("Coordinate Transformations", () => {
        .connect_systems("y", new t.ShiftStaticTransform([1,1,1]), "z")
        .compile();
 
-  it("Tranforms across a single gap work", (done) => {
-    vec_equal(n.transform([0,0,0], "a", "b"), [1,0,0], `fail a->b`);
+  it("Tranform across a single gap work", (done) => {
+    vec_equal(n.transform_vec([0,0,0], "a", "b"), [1,0,0], `fail a->b`);
     done();
   });
 
-  it("Non-existent systems cannot be transformed w.r.t.", (done) => {
+  it("Non-existent systems cannot be transform_veced w.r.t.", (done) => {
     assert.strict.throws(() => {
-      n.transform([0,0,0], "q", "b");
-    }, Error, "fail, tried to transform non-existent q");
+      n.transform_vec([0,0,0], "q", "b");
+    }, Error, "fail, tried to transform_vec non-existent q");
     done();
   });
 
-  it("Unconnected nodes cannot be transformed", (done) => {
+  it("Unconnected nodes cannot be transform_veced", (done) => {
     assert.strict.throws(() => {
-      n.transform([0,0,0], "a", "z");
-    }, Error, "fail, tried to transform a to z");
+      n.transform_vec([0,0,0], "a", "z");
+    }, Error, "fail, tried to transform_vec a to z");
     done();
   });
 
   it("Tranforms across a multiple gaps works", (done) => {
-    let res = n.transform([0,0,0], "a", "c");
+    let res = n.transform_vec([0,0,0], "a", "c");
     vec_equal(res, [1,1,0], `fail a->c ${res}`);
 
-    res = n.transform([0,0,0], "a", "d");
+    res = n.transform_vec([0,0,0], "a", "d");
     vec_equal(res, [1,0,1], `fail a->d ${res}`);
 
-    res = n.transform([0,0,0], "a", "f");
+    res = n.transform_vec([0,0,0], "a", "f");
     vec_equal(res, [1,0,0], `fail a->f ${res}`);
     done();
   });
@@ -124,13 +130,75 @@ describe("Coordinate Transformations", () => {
   it("network.update works", (done) => {
     
     n2.update({ atb : [1,0,0], btc : [0,1,0] });
-    let res = n2.transform([0,0,0], "a", "c");
+    let res = n2.transform_vec([0,0,0], "a", "c");
     vec_equal(res, [1,1,0], `fail a->c first ${res}`);
     
     n2.update({ atb : [2,0,0], btc : [0,2,0] });
-    res = n2.transform([0,0,0], "a", "c");
+    res = n2.transform_vec([0,0,0], "a", "c");
     vec_equal(res, [2,2,0], `fail a->c second ${res}`);
     
     done();
   });
 });
+
+describe("Quaternion tranforms and orientations with networks",() => {
+   
+  let n = (new CoordinateNetwork())
+       .connect_systems("a", new t.ShiftStaticTransform([1,0,0]), "b")
+       .connect_systems("b", new t.RotateStaticTransform(-Math.PI/2, [1,0,0]), "c")
+       .connect_systems("c", new t.RotateStaticTransform(Math.PI/2, [0,1,0]), "d")
+       .compile();
+
+  let isqrt2 = 1/Math.sqrt(2);
+
+  it("Tranform quats over a single gap works", (done) => {
+    let q, q2;
+
+    q = UQ.from_axis(Math.PI/2, [1,0,0]);
+
+    // Test no op
+    q2 = n.transform_quat(q, "a", "b");
+    vec_equal_approx(q2.qvec, [isqrt2, isqrt2, 0, 0], "fail a->b");
+
+    // Test rotation in same direction
+    // x * x * ~x = x
+    q2 = n.transform_quat(q, "b", "c");
+    vec_equal_approx(q2.qvec, [isqrt2, isqrt2, 0, 0], "fail b->c");
+
+    // Test rotation in opposite directions
+    // ~y * x * y = z
+    q2 = n.transform_quat(q, "c", "d");
+    vec_equal_approx(q2.qvec, [isqrt2, 0, 0, isqrt2], "fail c->d");
+
+    // Test back transforms
+    // y * x * ~y = -z
+    q2 = n.transform_quat(q, "d", "c");
+    vec_equal_approx(q2.qvec, [isqrt2, 0, 0, -isqrt2], "fail d->c");
+
+
+    done();
+  });
+
+  it("Tranform quats over a multiple gaps works", (done) => {
+    let q, q2;
+
+    q = UQ.from_axis(Math.PI/2, [1,0,0]);
+
+    // Test no op then rotate
+    // x * x * ~x = x
+    q2 = n.transform_quat(q, "a", "c");
+    vec_equal_approx(q2.qvec, [isqrt2, isqrt2, 0, 0], "fail a->c");
+    
+    // Test forward direction
+    // ~y * x * x * ~x * y = ~y * x * y = z
+    q2 = n.transform_quat(q, "a", "d");
+    vec_equal_approx(q2.qvec, [isqrt2, 0,0, isqrt2], "fail a->d");
+    
+    // Test reverse direction
+    // ~x * y * x * ~y * x = ~x * ~z * x = ~y
+    q2 = n.transform_quat(q, "d", "a");
+    vec_equal_approx(q2.qvec, [isqrt2, 0, -isqrt2, 0], "fail d->a");
+
+    done();
+  });
+}); 

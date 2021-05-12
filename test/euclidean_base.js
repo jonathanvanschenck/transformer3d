@@ -74,38 +74,38 @@ describe("Euclidean methods", () => {
   let vv;
   let e = (new Euclidean()).set_vecs([isqrt2,isqrt2,0,0], [0,1,0]);
 
-  it("`transform` works", (done) => {
+  it("`transform_vec` works", (done) => {
     for (let [vec, exp] of suite) {
-      vv = e.transform( vec );
+      vv = e.transform_vec( vec );
       vec_equal( vv, exp, `fail: t(${vec}) -> ${vv}, should be ${exp}` );
     }
     done();
   });
 
-  it("`untransform` works", (done) => {
+  it("`untransform_vec` works", (done) => {
     for (let [exp, vec] of suite) {
-      vv = e.untransform( vec );
+      vv = e.untransform_vec( vec );
       vec_equal( vv, exp, `fail: t(${vec}) -> ${vv}, should be ${exp}` );
     }
     done();
   });
 
 
-  it("`transform_ip` works", (done) => {
+  it("`transform_vec_ip` works", (done) => {
     for (let [vv, exp] of suite) {
       vec = [ vv[0], vv[1], vv[2] ];
       vv = [ vec[0], vec[1], vec[2] ];
-      e.transform_ip( vv );
+      e.transform_vec_ip( vv );
       vec_equal( vv, exp, `fail: t(${vec}) -> ${vv}, should be ${exp}` );
     }
     done();
   });
 
-  it("`untransform_ip` works", (done) => {
+  it("`untransform_vec_ip` works", (done) => {
     for (let [exp, vv] of suite) {
       vec = [ vv[0], vv[1], vv[2] ];
       vv = [ vec[0], vec[1], vec[2] ];
-      e.untransform_ip( vv );
+      e.untransform_vec_ip( vv );
       vec_equal( vv, exp, `fail: t(${vec}) -> ${vv}, should be ${exp}` );
     }
     done();
@@ -149,38 +149,38 @@ describe("Euclidean Reverse methods", () => {
   let vv;
   let e = (new EuclideanReverse()).set_vecs([isqrt2,isqrt2,0,0], [0,1,0]);
 
-  it("`transform` works", (done) => {
+  it("`transform_vec` works", (done) => {
     for (let [vec, exp] of suite) {
-      vv = e.transform( vec );
+      vv = e.transform_vec( vec );
       vec_equal( vv, exp, `fail: t(${vec}) -> ${vv}, should be ${exp}` );
     }
     done();
   });
 
-  it("`untransform` works", (done) => {
+  it("`untransform_vec` works", (done) => {
     for (let [exp, vec] of suite) {
-      vv = e.untransform( vec );
+      vv = e.untransform_vec( vec );
       vec_equal( vv, exp, `fail: t(${vec}) -> ${vv}, should be ${exp}` );
     }
     done();
   });
 
 
-  it("`transform_ip` works", (done) => {
+  it("`transform_vec_ip` works", (done) => {
     for (let [vv, exp] of suite) {
       vec = [ vv[0], vv[1], vv[2] ];
       vv = [ vec[0], vec[1], vec[2] ];
-      e.transform_ip( vv );
+      e.transform_vec_ip( vv );
       vec_equal( vv, exp, `fail: t(${vec}) -> ${vv}, should be ${exp}` );
     }
     done();
   });
 
-  it("`untransform_ip` works", (done) => {
+  it("`untransform_vec_ip` works", (done) => {
     for (let [exp, vv] of suite) {
       vec = [ vv[0], vv[1], vv[2] ];
       vv = [ vec[0], vec[1], vec[2] ];
-      e.untransform_ip( vv );
+      e.untransform_vec_ip( vv );
       vec_equal( vv, exp, `fail: t(${vec}) -> ${vv}, should be ${exp}` );
     }
     done();
@@ -188,7 +188,7 @@ describe("Euclidean Reverse methods", () => {
 });
 
 
-describe("Compositing transforms correctly", () => {
+describe("Compositing transform_vecs correctly", () => {
   
   let isqrt2 = 1/Math.sqrt(2);
 
@@ -197,7 +197,7 @@ describe("Compositing transforms correctly", () => {
     let b = (new EuclideanReverse()).set_vecs([isqrt2, 0, isqrt2, 0], [1, 0, 0])
     let e = (new EuclideanReverse()).set_as_composite( a, b );
     let vec = [ 0, 1, 0];
-    let vv = e.transform( vec );
+    let vv = e.transform_vec( vec );
     vec_equal( vv, [ 1, 1, 1 ]);
     done();
   });
@@ -207,7 +207,7 @@ describe("Compositing transforms correctly", () => {
     let a = (new EuclideanReverse()).set_vecs([isqrt2, 0, isqrt2, 0], [1, 0, 0])
     let e = (new EuclideanReverse()).set_as_composite( a, b );
     let vec = [ 1, 0, 0];
-    let vv = e.transform( vec );
+    let vv = e.transform_vec( vec );
     vec_equal( vv, [ 0, 3, 0 ]);
     done();
   });
@@ -222,12 +222,47 @@ describe("Euclidean Tranformations Rotate Coordinate Systems", () => {
     let cos = Math.cos(0.1/2.0);
     let sin = Math.sin(0.1/2.0);
     let e = (new Euclidean()).set_vecs([cos, sin, 0, 0 ], [0, 0, 0]);
-    let vv = e.transform( [ 0, 0, 1] );
+    let vv = e.transform_vec( [ 0, 0, 1] );
     vec_equal( vv, [ 0, Math.sin(0.1), Math.cos(0.1) ], "fail vector");
 
+    done();
+  });
+
+  it("Orienting quaternions applies pre-applies the inverse", (done) => {
+
+    let cos = Math.cos(0.1/2.0);
+    let sin = Math.sin(0.1/2.0);
+    let e = (new Euclidean()).set_vecs([cos, sin, 0, 0 ], [0, 0, 0]);
+    
+    // Test referecing and coordinate convetions in the same direction
     let q = UQ.from_axis(0.1, [1,0,0]);
     let q2 = e.orient(q);
-    vec_equal(q2.qvec, [ Math.cos(0.2/2), Math.sin(0.2/2), 0, 0 ]);
+    vec_equal(q2.qvec, [ 1, 0, 0, 0 ], "fail same direction");
+
+    // Test referencing and coordiante conventions in different directions
+    e = (new Euclidean()).set_vecs([isqrt2, -isqrt2, 0, 0], [ 0, 0, 0]); // rotation -90 about x
+    q = UQ.from_axis(Math.PI/2, [0,1,0]) // rotate 90 about y
+    q2 = e.orient( q ); // should be "undo e.quat, then do q" rotate 120 about {1,1,1}
+    vec_equal( q2.qvec, [ 0.5, 0.5, 0.5, 0.5 ], "fail different directions");
+    done();
+  });
+
+  it("Transforming quaternions applies funky wraper thing", (done) => {
+
+    let cos = Math.cos(0.1/2.0);
+    let sin = Math.sin(0.1/2.0);
+    let e = (new Euclidean()).set_vecs([cos, sin, 0, 0 ], [0, 0, 0]);
+    
+    // Test referecing and coordinate convetions in the same direction
+    let q = UQ.from_axis(0.1, [1,0,0]);
+    let q2 = e.transform_quat(q);
+    vec_equal(q2.qvec, [ Math.cos(0.1/2), Math.sin(0.1/2), 0, 0 ], "fail same directions");
+
+    // Test referencing and coordiante conventions in different directions
+    e = (new Euclidean()).set_vecs([isqrt2, -isqrt2, 0, 0], [ 0, 0, 0]); // rotation -90 about x
+    q = UQ.from_axis(Math.PI/2, [0,1,0]) // rotate 90 about y
+    q2 = e.transform_quat( q ); // should be "undo e.quat, then do q, then redo e.quat" = 90 about z
+    vec_equal( q2.qvec, [ isqrt2, 0, 0, isqrt2 ], "fail different directions");
     done();
   });
 });
