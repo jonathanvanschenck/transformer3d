@@ -213,3 +213,21 @@ describe("Compositing transforms correctly", () => {
   });
 
 });
+
+describe("Euclidean Tranformations Rotate Coordinate Systems", () => {
+  
+  let isqrt2 = 1/Math.sqrt(2);
+
+  it("Transforming vectors rotates coordinates", (done) => {
+    let cos = Math.cos(0.1/2.0);
+    let sin = Math.sin(0.1/2.0);
+    let e = (new Euclidean()).set_vecs([cos, sin, 0, 0 ], [0, 0, 0]);
+    let vv = e.transform( [ 0, 0, 1] );
+    vec_equal( vv, [ 0, Math.sin(0.1), Math.cos(0.1) ], "fail vector");
+
+    let q = UQ.from_axis(0.1, [1,0,0]);
+    let q2 = e.orient(q);
+    vec_equal(q2.qvec, [ Math.cos(0.2/2), Math.sin(0.2/2), 0, 0 ]);
+    done();
+  });
+});

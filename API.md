@@ -75,6 +75,7 @@ group in 3 dimensions.
             * [.j](#module_quaternion..UnitQuaternion+j) ⇒ <code>number</code>
             * [.k](#module_quaternion..UnitQuaternion+k) ⇒ <code>number</code>
             * [.qvec](#module_quaternion..UnitQuaternion+qvec) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.qvec_inv](#module_quaternion..UnitQuaternion+qvec_inv) ⇒ <code>Array.&lt;number&gt;</code>
             * [.json](#module_quaternion..UnitQuaternion+json) ⇒ <code>Object</code>
             * [.set_vec(qvec)](#module_quaternion..UnitQuaternion+set_vec) ⇒ <code>this</code>
             * [.set_axis(angle, vec)](#module_quaternion..UnitQuaternion+set_axis) ⇒ <code>this</code>
@@ -82,13 +83,21 @@ group in 3 dimensions.
             * [.set_as_before(other)](#module_quaternion..UnitQuaternion+set_as_before) ⇒ <code>this</code>
             * [.set_as_after(other)](#module_quaternion..UnitQuaternion+set_as_after) ⇒ <code>this</code>
             * [.set_as_composite(first, second)](#module_quaternion..UnitQuaternion+set_as_composite) ⇒ <code>this</code>
+            * [.set_with_reference(other)](#module_quaternion..UnitQuaternion+set_with_reference) ⇒ <code>this</code>
+            * [.set_without_reference(other)](#module_quaternion..UnitQuaternion+set_without_reference) ⇒ <code>this</code>
+            * [.set_with_coordinate_convention(other)](#module_quaternion..UnitQuaternion+set_with_coordinate_convention) ⇒ <code>this</code>
+            * [.set_without_coordinate_convention(other)](#module_quaternion..UnitQuaternion+set_without_coordinate_convention) ⇒ <code>this</code>
             * [.mult(other)](#module_quaternion..UnitQuaternion+mult) ⇒ <code>UnitQuaternion</code>
             * [.after(other)](#module_quaternion..UnitQuaternion+after) ⇒ <code>UnitQuaternion</code>
             * [.before(other)](#module_quaternion..UnitQuaternion+before) ⇒ <code>UnitQuaternion</code>
-            * [.rotate(vec)](#module_quaternion..UnitQuaternion+rotate) ⇒ <code>Array.&lt;number&gt;</code>
-            * [.unrotate(vec)](#module_quaternion..UnitQuaternion+unrotate) ⇒ <code>Array.&lt;number&gt;</code>
-            * [.rotate_ip(vec)](#module_quaternion..UnitQuaternion+rotate_ip) ⇒ <code>undefined</code>
-            * [.unrotate_ip(vec)](#module_quaternion..UnitQuaternion+unrotate_ip) ⇒ <code>undefined</code>
+            * [.with_reference(other)](#module_quaternion..UnitQuaternion+with_reference) ⇒ <code>UnitQuaternion</code>
+            * [.without_reference(other)](#module_quaternion..UnitQuaternion+without_reference) ⇒ <code>UnitQuaternion</code>
+            * [.with_coordinate_convention(other)](#module_quaternion..UnitQuaternion+with_coordinate_convention) ⇒ <code>UnitQuaternion</code>
+            * [.without_coordinate_convention(other)](#module_quaternion..UnitQuaternion+without_coordinate_convention) ⇒ <code>UnitQuaternion</code>
+            * [.rotate_vec(vec)](#module_quaternion..UnitQuaternion+rotate_vec) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.unrotate_vec(vec)](#module_quaternion..UnitQuaternion+unrotate_vec) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.rotate_vec_ip(vec)](#module_quaternion..UnitQuaternion+rotate_vec_ip) ⇒ <code>undefined</code>
+            * [.unrotate_vec_ip(vec)](#module_quaternion..UnitQuaternion+unrotate_vec_ip) ⇒ <code>undefined</code>
             * [.toString()](#module_quaternion..UnitQuaternion+toString) ⇒ <code>string</code>
         * _static_
             * [.from_vec(qvec)](#module_quaternion..UnitQuaternion.from_vec) ⇒ <code>UnitQuaternion</code>
@@ -111,6 +120,7 @@ A quaternion class for rotating 3d vectors
         * [.j](#module_quaternion..UnitQuaternion+j) ⇒ <code>number</code>
         * [.k](#module_quaternion..UnitQuaternion+k) ⇒ <code>number</code>
         * [.qvec](#module_quaternion..UnitQuaternion+qvec) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.qvec_inv](#module_quaternion..UnitQuaternion+qvec_inv) ⇒ <code>Array.&lt;number&gt;</code>
         * [.json](#module_quaternion..UnitQuaternion+json) ⇒ <code>Object</code>
         * [.set_vec(qvec)](#module_quaternion..UnitQuaternion+set_vec) ⇒ <code>this</code>
         * [.set_axis(angle, vec)](#module_quaternion..UnitQuaternion+set_axis) ⇒ <code>this</code>
@@ -118,13 +128,21 @@ A quaternion class for rotating 3d vectors
         * [.set_as_before(other)](#module_quaternion..UnitQuaternion+set_as_before) ⇒ <code>this</code>
         * [.set_as_after(other)](#module_quaternion..UnitQuaternion+set_as_after) ⇒ <code>this</code>
         * [.set_as_composite(first, second)](#module_quaternion..UnitQuaternion+set_as_composite) ⇒ <code>this</code>
+        * [.set_with_reference(other)](#module_quaternion..UnitQuaternion+set_with_reference) ⇒ <code>this</code>
+        * [.set_without_reference(other)](#module_quaternion..UnitQuaternion+set_without_reference) ⇒ <code>this</code>
+        * [.set_with_coordinate_convention(other)](#module_quaternion..UnitQuaternion+set_with_coordinate_convention) ⇒ <code>this</code>
+        * [.set_without_coordinate_convention(other)](#module_quaternion..UnitQuaternion+set_without_coordinate_convention) ⇒ <code>this</code>
         * [.mult(other)](#module_quaternion..UnitQuaternion+mult) ⇒ <code>UnitQuaternion</code>
         * [.after(other)](#module_quaternion..UnitQuaternion+after) ⇒ <code>UnitQuaternion</code>
         * [.before(other)](#module_quaternion..UnitQuaternion+before) ⇒ <code>UnitQuaternion</code>
-        * [.rotate(vec)](#module_quaternion..UnitQuaternion+rotate) ⇒ <code>Array.&lt;number&gt;</code>
-        * [.unrotate(vec)](#module_quaternion..UnitQuaternion+unrotate) ⇒ <code>Array.&lt;number&gt;</code>
-        * [.rotate_ip(vec)](#module_quaternion..UnitQuaternion+rotate_ip) ⇒ <code>undefined</code>
-        * [.unrotate_ip(vec)](#module_quaternion..UnitQuaternion+unrotate_ip) ⇒ <code>undefined</code>
+        * [.with_reference(other)](#module_quaternion..UnitQuaternion+with_reference) ⇒ <code>UnitQuaternion</code>
+        * [.without_reference(other)](#module_quaternion..UnitQuaternion+without_reference) ⇒ <code>UnitQuaternion</code>
+        * [.with_coordinate_convention(other)](#module_quaternion..UnitQuaternion+with_coordinate_convention) ⇒ <code>UnitQuaternion</code>
+        * [.without_coordinate_convention(other)](#module_quaternion..UnitQuaternion+without_coordinate_convention) ⇒ <code>UnitQuaternion</code>
+        * [.rotate_vec(vec)](#module_quaternion..UnitQuaternion+rotate_vec) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.unrotate_vec(vec)](#module_quaternion..UnitQuaternion+unrotate_vec) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.rotate_vec_ip(vec)](#module_quaternion..UnitQuaternion+rotate_vec_ip) ⇒ <code>undefined</code>
+        * [.unrotate_vec_ip(vec)](#module_quaternion..UnitQuaternion+unrotate_vec_ip) ⇒ <code>undefined</code>
         * [.toString()](#module_quaternion..UnitQuaternion+toString) ⇒ <code>string</code>
     * _static_
         * [.from_vec(qvec)](#module_quaternion..UnitQuaternion.from_vec) ⇒ <code>UnitQuaternion</code>
@@ -160,6 +178,14 @@ Get k component of quaternion
 
 #### unitQuaternion.qvec ⇒ <code>Array.&lt;number&gt;</code>
 Get vector form of quaternion
+
+Note the convention is `[ re, i, j, k ]`
+
+**Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+<a name="module_quaternion..UnitQuaternion+qvec_inv"></a>
+
+#### unitQuaternion.qvec\_inv ⇒ <code>Array.&lt;number&gt;</code>
+Get vector form of quaternion inverse
 
 Note the convention is `[ re, i, j, k ]`
 
@@ -248,6 +274,69 @@ Mutate this quaternion to be the composite of two quaternions
 | first | <code>UnitQuaternion</code> | the quaternion to apply first in rotation |
 | second | <code>UnitQuaternion</code> | the quaternion to apply second in rotation |
 
+<a name="module_quaternion..UnitQuaternion+set_with_reference"></a>
+
+#### unitQuaternion.set\_with\_reference(other) ⇒ <code>this</code>
+Mutate this quaternion to be reoriented with respect to another
+
+In this construction, `this` starts out representing the coordinate
+transformation from the origin system to a new orientation (A->B). The `other` 
+quaternion serves as the transformation from the original coordinate to
+an new reference coordinate system (A->A'). This method will mutate `this`
+so that it represents the transformation from the new reference to the new
+orientation (A'->B).
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>UnitQuaternion</code> | the quaternion giving the transform to the new referece |
+
+<a name="module_quaternion..UnitQuaternion+set_without_reference"></a>
+
+#### unitQuaternion.set\_without\_reference(other) ⇒ <code>this</code>
+Mutate this quaternion to be oriented without respect to `other`
+
+This is the inverse of `.set_with_reference`
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>UnitQuaternion</code> | the quaternion giving the old reference |
+
+<a name="module_quaternion..UnitQuaternion+set_with_coordinate_convention"></a>
+
+#### unitQuaternion.set\_with\_coordinate\_convention(other) ⇒ <code>this</code>
+Mutate this quaternion to have new coordinate convention
+
+In this construction, `this` starts out representing the
+transformation from the origin orientation to a new orientation (A->B), given
+a particular coordinate convention (i.e. z=up, x=forward, y=left). `other`
+quaternion serves as the transformation from one coordinate convention to another
+coordinate convention (i.e. xyz=FLU to x'y'z'=RFU). This method will mutate `this`
+so that it represents the same orientation transformation, but utilizing the
+new coordinate convention (i.e. A'->B').
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>UnitQuaternion</code> | the quaternion giving the transform to the new coordinate convention |
+
+<a name="module_quaternion..UnitQuaternion+set_without_coordinate_convention"></a>
+
+#### unitQuaternion.set\_without\_coordinate\_convention(other) ⇒ <code>this</code>
+Mutate this quaternion to remove a coordinate convention
+
+This is the inverse of `.set_with_coordinate_convention`
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>UnitQuaternion</code> | the quaternion giving the transform to the coordinate convention to remove |
+
 <a name="module_quaternion..UnitQuaternion+mult"></a>
 
 #### unitQuaternion.mult(other) ⇒ <code>UnitQuaternion</code>
@@ -294,9 +383,57 @@ by `other`.
 | --- | --- | --- |
 | other | <code>UnitQuaternion</code> | the 'post-applied' rotation |
 
-<a name="module_quaternion..UnitQuaternion+rotate"></a>
+<a name="module_quaternion..UnitQuaternion+with_reference"></a>
 
-#### unitQuaternion.rotate(vec) ⇒ <code>Array.&lt;number&gt;</code>
+#### unitQuaternion.with\_reference(other) ⇒ <code>UnitQuaternion</code>
+Create the quaterion which is `this` referenced against `other`
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+**Returns**: <code>UnitQuaternion</code> - The transformation of `this` referenced against `other`  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>UnitQuaternion</code> | the new reference point |
+
+<a name="module_quaternion..UnitQuaternion+without_reference"></a>
+
+#### unitQuaternion.without\_reference(other) ⇒ <code>UnitQuaternion</code>
+Create the quaterion which is `this` dereferenced against `other`
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+**Returns**: <code>UnitQuaternion</code> - The transformation of `this` dereferenced against `other`  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>UnitQuaternion</code> | the reference point to dereference |
+
+<a name="module_quaternion..UnitQuaternion+with_coordinate_convention"></a>
+
+#### unitQuaternion.with\_coordinate\_convention(other) ⇒ <code>UnitQuaternion</code>
+Create the quaternion which is `this` with new coordinate convetion
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+**Returns**: <code>UnitQuaternion</code> - The new convention quaternion  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>UnitQuaternion</code> | the coordinate convetion transformation |
+
+<a name="module_quaternion..UnitQuaternion+without_coordinate_convention"></a>
+
+#### unitQuaternion.without\_coordinate\_convention(other) ⇒ <code>UnitQuaternion</code>
+Create the quaternion which is `this` with dereferencing a coordinate convetion
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+**Returns**: <code>UnitQuaternion</code> - The old convention quaternion  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>UnitQuaternion</code> | the coordinate convetion transformation to remove |
+
+<a name="module_quaternion..UnitQuaternion+rotate_vec"></a>
+
+#### unitQuaternion.rotate\_vec(vec) ⇒ <code>Array.&lt;number&gt;</code>
 Rotate a 3d vector with this quaternion
 
 **Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
@@ -306,9 +443,9 @@ Rotate a 3d vector with this quaternion
 | --- | --- | --- |
 | vec | <code>Array.&lt;number&gt;</code> | the vector to rotate (must be length 3) |
 
-<a name="module_quaternion..UnitQuaternion+unrotate"></a>
+<a name="module_quaternion..UnitQuaternion+unrotate_vec"></a>
 
-#### unitQuaternion.unrotate(vec) ⇒ <code>Array.&lt;number&gt;</code>
+#### unitQuaternion.unrotate\_vec(vec) ⇒ <code>Array.&lt;number&gt;</code>
 Undoes a rotation of a 3d vector with this quaterion
 
 **Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
@@ -318,9 +455,9 @@ Undoes a rotation of a 3d vector with this quaterion
 | --- | --- | --- |
 | vec | <code>Array.&lt;number&gt;</code> | the vector to unrotate (must be length 3) |
 
-<a name="module_quaternion..UnitQuaternion+rotate_ip"></a>
+<a name="module_quaternion..UnitQuaternion+rotate_vec_ip"></a>
 
-#### unitQuaternion.rotate\_ip(vec) ⇒ <code>undefined</code>
+#### unitQuaternion.rotate\_vec\_ip(vec) ⇒ <code>undefined</code>
 Rotate a 3d vector with this quaternion in place
 
 **Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
@@ -329,9 +466,9 @@ Rotate a 3d vector with this quaternion in place
 | --- | --- | --- |
 | vec | <code>Array.&lt;number&gt;</code> | the vector to rotate in place (must be length 3) |
 
-<a name="module_quaternion..UnitQuaternion+unrotate_ip"></a>
+<a name="module_quaternion..UnitQuaternion+unrotate_vec_ip"></a>
 
-#### unitQuaternion.unrotate\_ip(vec) ⇒ <code>undefined</code>
+#### unitQuaternion.unrotate\_vec\_ip(vec) ⇒ <code>undefined</code>
 Undoes a rotation of a 3d vector with this quaternion in place
 
 **Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
@@ -578,9 +715,20 @@ Construct a shift from a vector
 ## transform
 Transformation objects for coordinate transformations of 3d vectors
 
+
+* [transform](#module_transform)
+    * [~Transform](#module_transform..Transform)
+    * [~CompositeTransform](#module_transform..CompositeTransform)
+
 <a name="module_transform..Transform"></a>
 
 ### transform~Transform
 Abstract base class for cooridnate transformation
+
+**Kind**: inner class of [<code>transform</code>](#module_transform)  
+<a name="module_transform..CompositeTransform"></a>
+
+### transform~CompositeTransform
+Generic Composite Tranform
 
 **Kind**: inner class of [<code>transform</code>](#module_transform)  
