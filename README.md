@@ -1,5 +1,10 @@
 # transformer3d.js
-A node.js library for transforming between a 3d coordinate systems. Check it out [here!](https://github.com/jonathanvanschenck/transformer3d)
+A node.js library for transforming between a 3d coordinate systems. Check it out [here!](https://github.com/jonathanvanschenck/transformer3d).
+
+# Installation
+```bash
+npm install transfomer3d
+```
 
 # Basic Usage
 The core object for this library is the `CooridinateNetwork`, which allows to user
