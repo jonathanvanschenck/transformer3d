@@ -8,7 +8,8 @@ const {
   RotateStaticTransform,
   EuclideanStaticTransform,
   EuclideanReverseStaticTransform,
-  EuclideanCompositeTransform
+  EuclideanCompositeTransform,
+  PinholeCameraTransform
 } = require('../lib/transform.js');
 
 // const UQ = require('../lib/quaternion.js').UnitQuaternion;
@@ -110,3 +111,51 @@ describe("Euclidean Composition", () => {
     done();
   });
 });
+
+
+describe("Updating dynamic data in Transforms",() => { 
+
+  it("Updating with empty state is no op", (done) => {
+    let t = new Transform();
+    t.update({}); // shouldn't throw an error
+
+    t = new PinholeCameraTransform("Q");
+    t.update({}); // shouldn't thrown an error
+
+    t = new ShiftDynamicTransform("shift");
+    t.update({}); // shouldn't throw an error
+  
+    for ( let [dk, sn] of [
+      [["angle_key", "axis_key"], "set_axis"],
+      ["qvec_key", "set_vec"],
+      [{yaw:"yaw_key", pitch:"pitch_key", roll:"roll_key"}, "set_euler"]
+    ]) {
+      t = new RotateDynamicTransform(dk, sn);
+      t.update({}); // shouldn't throw an error
+    }
+
+    done();
+  });
+
+  it("Updating with bad state is no op", (done) => {
+    let t = new Transform();
+    t.update({bad:1}); // shouldn't throw an error
+
+    t = new PinholeCameraTransform("Q");
+    t.update({bad:1}); // shouldn't thrown an error
+
+    t = new ShiftDynamicTransform("shift");
+    t.update({bad:1}); // shouldn't throw an error
+  
+    for ( let [dk, sn] of [
+      [["angle_key", "axis_key"], "set_axis"],
+      ["qvec_key", "set_vec"],
+      [{yaw:"yaw_key", pitch:"pitch_key", roll:"roll_key"}, "set_euler"]
+    ]) {
+      t = new RotateDynamicTransform(dk, sn);
+      t.update({bad:1}); // shouldn't throw an error
+    }
+
+    done();
+  });
+}); 

@@ -408,6 +408,11 @@ group in 3 dimensions.
             * [.qvec](#module_quaternion..UnitQuaternion+qvec) ⇒ <code>Array.&lt;number&gt;</code>
             * [.qvec_inv](#module_quaternion..UnitQuaternion+qvec_inv) ⇒ <code>Array.&lt;number&gt;</code>
             * [.json](#module_quaternion..UnitQuaternion+json) ⇒ <code>Object</code>
+            * [.angle](#module_quaternion..UnitQuaternion+angle) ⇒ <code>number</code>
+            * [.axis](#module_quaternion..UnitQuaternion+axis) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.yaw](#module_quaternion..UnitQuaternion+yaw) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.pitch](#module_quaternion..UnitQuaternion+pitch) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.roll](#module_quaternion..UnitQuaternion+roll) ⇒ <code>Array.&lt;number&gt;</code>
             * [.set_vec(qvec)](#module_quaternion..UnitQuaternion+set_vec) ⇒ <code>this</code>
             * [.set_axis(angle, vec)](#module_quaternion..UnitQuaternion+set_axis) ⇒ <code>this</code>
             * [.set_euler(yaw, pitch, roll)](#module_quaternion..UnitQuaternion+set_euler) ⇒ <code>this</code>
@@ -435,7 +440,6 @@ group in 3 dimensions.
             * [.from_axis(angle, vec)](#module_quaternion..UnitQuaternion.from_axis) ⇒ <code>UnitQuaternion</code>
             * [.from_euler(obj)](#module_quaternion..UnitQuaternion.from_euler) ⇒ <code>UnitQuaternion</code>
             * [.from_json(obj)](#module_quaternion..UnitQuaternion.from_json) ⇒ <code>UnitQuaternion</code>
-    * [~cap_precision(value, cap)](#module_quaternion..cap_precision) ⇒ <code>string</code>
 
 <a name="module_quaternion..UnitQuaternion"></a>
 
@@ -453,6 +457,11 @@ A quaternion class for rotating 3d vectors
         * [.qvec](#module_quaternion..UnitQuaternion+qvec) ⇒ <code>Array.&lt;number&gt;</code>
         * [.qvec_inv](#module_quaternion..UnitQuaternion+qvec_inv) ⇒ <code>Array.&lt;number&gt;</code>
         * [.json](#module_quaternion..UnitQuaternion+json) ⇒ <code>Object</code>
+        * [.angle](#module_quaternion..UnitQuaternion+angle) ⇒ <code>number</code>
+        * [.axis](#module_quaternion..UnitQuaternion+axis) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.yaw](#module_quaternion..UnitQuaternion+yaw) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.pitch](#module_quaternion..UnitQuaternion+pitch) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.roll](#module_quaternion..UnitQuaternion+roll) ⇒ <code>Array.&lt;number&gt;</code>
         * [.set_vec(qvec)](#module_quaternion..UnitQuaternion+set_vec) ⇒ <code>this</code>
         * [.set_axis(angle, vec)](#module_quaternion..UnitQuaternion+set_axis) ⇒ <code>this</code>
         * [.set_euler(yaw, pitch, roll)](#module_quaternion..UnitQuaternion+set_euler) ⇒ <code>this</code>
@@ -528,6 +537,45 @@ Get the json object of this quaternion
 
 Will return an object of the form:
 `{ re, i, j, k }`
+
+**Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+<a name="module_quaternion..UnitQuaternion+angle"></a>
+
+#### unitQuaternion.angle ⇒ <code>number</code>
+Get the angle of this quaternion's rotation
+
+**Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+<a name="module_quaternion..UnitQuaternion+axis"></a>
+
+#### unitQuaternion.axis ⇒ <code>Array.&lt;number&gt;</code>
+Get the axis of the angle this quaternion's rotation
+
+If the angle of rotation is 0, the default axis is [0,0,1]
+
+**Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+**Returns**: <code>Array.&lt;number&gt;</code> - normalized 3d vector of rotation  
+<a name="module_quaternion..UnitQuaternion+yaw"></a>
+
+#### unitQuaternion.yaw ⇒ <code>Array.&lt;number&gt;</code>
+Get the yaw for this quaternion's orientation
+
+TODO : Explain convention
+
+**Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+<a name="module_quaternion..UnitQuaternion+pitch"></a>
+
+#### unitQuaternion.pitch ⇒ <code>Array.&lt;number&gt;</code>
+Get the pitch for this quaternion's orientation
+
+TODO : Explain convention
+
+**Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+<a name="module_quaternion..UnitQuaternion+roll"></a>
+
+#### unitQuaternion.roll ⇒ <code>Array.&lt;number&gt;</code>
+Get the roll for this quaternion's orientation
+
+TODO : Explain convention
 
 **Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
 <a name="module_quaternion..UnitQuaternion+set_vec"></a>
@@ -877,18 +925,6 @@ must be given, otherwise the constructor will fail
 | [obj.j] | <code>number</code> | <code>0.0</code> | the j component |
 | [obj.k] | <code>number</code> | <code>0.0</code> | the k component |
 
-<a name="module_quaternion..cap_precision"></a>
-
-### quaternion~cap\_precision(value, cap) ⇒ <code>string</code>
-Cap a number at a certain precision
-
-**Kind**: inner method of [<code>quaternion</code>](#module_quaternion)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | <code>number</code> | number to cap |
-| cap | <code>number</code> | maximum number of decimal places |
-
 <a name="module_shift"></a>
 
 ## shift
@@ -1118,7 +1154,16 @@ is the method to be able to provide that data
 later on. The common convention is for dynamic
 transformations to be instantiated with a 'key'
 string, for which `state[key]` will yeild the
-correct data for updating.
+correct data for updating. Note that this method
+is also responsible for handling the case when
+a state is passed which does not contain the
+'key' this class is expecting. The advised method
+is to put a gaurd statement at the top of the method
+like
+```javascript
+if (state[key] is undefined) return this;
+```
+See `ShiftDynamicTransform` for an example.
 
 For non-dynamic transformation, this method is a
 noop.
@@ -1333,7 +1378,7 @@ There are several methods of providing the rotation, specified by `setter_name`:
  the `data_key` should be a string `"key_for_qvec"`.
  3) "set_euler" where a yaw, pitch and roll are provided. In this case, the 
  `data_key` should be an object: `{ yaw: "key_for_yaw", pitch: "key_for_pitch",
- roll: "key_for_roll" }`. Note any (but not all) of the keys can be `undefined`
+ roll: "key_for_roll" }`. Note any of the keys can be `undefined`
 
 
 | Param | Type | Description |

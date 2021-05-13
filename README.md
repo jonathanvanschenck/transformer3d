@@ -1,5 +1,5 @@
 # transformer3d.js
-A node.js library for transforming between a 3d coordinate systems. Check it out [here!](https://github.com/jonathanvanschenck/transformer3d).
+A node.js library for transforming between a 3d coordinate systems. Check it out [here!](https://github.com/jonathanvanschenck/transformer3d)
 
 # Installation
 ```bash
@@ -189,7 +189,7 @@ See the [full API](API.md) for more details on advanced usage.
 The author welcomes any feedback, pull requests, feature request, and forks!
 
 # Known Bugs
-None yet! But just wait . . .
+
 
 # TODO
  - Finish commenting the pinhole camera module
