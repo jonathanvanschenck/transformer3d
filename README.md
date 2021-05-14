@@ -7,7 +7,7 @@ npm install transfomer3d
 ```
 
 # Basic Usage
-The core object for this library is the `CooridinateNetwork`, which allows to user
+The core object for this library is the `CoordinateNetwork`, which allows to user
 to build up a graph, where the nodes are various coordinate systems, and the edges
 are transformations between the two node pairs. Nodes are identified with some unique
 name, and edges are instances of the `transform.Transform` object (or it's many subclasses).
@@ -132,6 +132,55 @@ net.transform_vec([0,0,0], "A", "B"); // returns [3,0,0]
 
 Check out [the full API](API.md#module_transform) for details on using dynamic connections
 
+#### Connection to Affine Transformations
+A common alternative to the quaternion approach used in this library is to implement coordinate
+transformations using matrix multiplication. This is often construed as a subset of affine
+transformations, where the matrix part is required to be determinant 1. The basic form of an
+affine transformation is:
+```
+v'^T = A * v^T + b^T
+```
+where v and v' are row vectors for before and after the affine transformation, A is the matrix
+part (the rotation) and b is the vector part (the shift). These rotate and shift operations are
+accomplished in this library using the `quaternion.UnitQuaternion` and `shift.Shift` classes,
+but it is possible to convert between the two representations. For example:
+```javascript
+const { Euclidean } = require('transformer3d').euclidean;
+const { UnitQuaternion } = require('transformer3d').quaternion;
+const { Shift } = require('transformer3d').shift;
+euc = new Euclidean();
+q = UnitQuaternion.from_axis( Math.PI/4, [0,0,1] ); // rotate 45 deg about z axis
+s = Shift.from_vec([0,0,1]);                        // shift 1 unit in z
+euc.set_objects( q, s );
+
+euc.affine; // returns { A : [[1/sqrt(2),1/sqrt(2),0],[-1/sqrt(2),1/sqrt(2),0],[0,0,1]], B : [0,0,1] }
+```
+
+Note that `network.CoordinateNetwork` instances are also aware of affine transformations too, so that
+you can get the total equivalent affine transformation for any two coordinate systems which are connected
+by Euclidean-type transformations:
+```javascript
+const { transform, CoordinateNetwork } = require('transformer3d');
+
+let net = new CoordinateNetwork();
+net.connect_systems("A", transform.ShiftStaticTransform([0,1,0]), "B") // B is 1 unit shifted from A in y dir
+net.connect_systems("B", transform.RotateStaticTransform(Math.PI/2, [1,0,0]), "C") // C is rotated 90 about x from B
+net.compile();
+
+net.get_affine("A","B"); // returns { A : [[1,0,0],[0,1,0],[0,0,1]], b : [0,1,0] }
+net.get_affine("A","C"); // returns { A : [[0,1,0],[-1,0,0],[0,0,1]], b : [1,0,0] }
+```
+
+Notice in that last case that the affine shift `b : [1,0,0]` is in the coordinate system of 'C', since
+affine transformations always apply their shifts at the end, even though the network would apply the 
+shift from "A" to "B" *before* rotating from "B" to "C".
+
+As a final note, the `net.get_affine` method will only work if all the internal transformations between
+the two coordinate systems are Euclidean-type. If any non-Euclidean transformations are present in the
+chain between the two endpoints, the method will throw an error. This is because generic transformation
+objects are not garenteed to have an effect affine transformation equivalent (e.g. the `transform.PinholeCameraTransform`
+is distinctly *not* affine in nature, since disparity and distance are inversely related to one another).
+
 ### Pinhole Camera Transformations
 This library also has limited support for transforming between pixel-space (i, j and disparity)
 and world-space (X, Y, Z) for a pair of stereocalibrated cameras, following the conventions
@@ -170,7 +219,7 @@ the "up" direction, however there is another coordinate frame "B" where x points
 "left" direction (which can be reached from A by rotating +90 degrees around the z-axis).
 Then the orientation quaternion `q` can be transformed into this new coordinate system by:
 ```javascript
-const net = (new CooridinateNetwork())
+const net = (new CoordinateNetwork())
   .connect_systems("A", new transform.RotateStaticTransform( Math.PI/2, [0,0,1] ), "B")
   .compile();
 

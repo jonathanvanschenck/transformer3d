@@ -351,3 +351,55 @@ describe("String formatting", () => {
     done();
   });
 });
+
+
+describe("Quaternion to Matrix", () => {
+  
+  it("Can generate identity", (done) => {
+    
+    let mat = new UnitQuaternion();
+    let exp = [[1,0,0],[0,1,0],[0,0,1]];
+    mat.matrix.forEach((r,i) => vec_equal(r,exp[i], `fail row ${i}, ${r}, ${exp[i]}`));
+    done();
+  });
+
+  it("Can generate axis", (done) => {
+    
+    let mat = UnitQuaternion.from_axis(0.1, [0,0,1]);
+    let cos = Math.cos(0.1), sin = Math.sin(0.1);
+    let exp = [[cos,sin,0],[-sin,cos,0],[0,0,1]];
+    mat.matrix.forEach((r,i) => vec_equal(r,exp[i], `fail row ${i}, ${r}, ${exp[i]}`));
+    done();
+  });
+
+  it("Can compose", (done) => {
+    
+    let mat = UnitQuaternion.from_axis(0.1, [0,0,1]).before(UnitQuaternion.from_axis(0.1, [1,0,0]));
+    let cos = Math.cos(0.1), sin = Math.sin(0.1);
+    let exp1 = [[cos,sin,0],[-sin,cos,0],[0,0,1]];
+    let exp2 = [[1,0,0],[0,cos,sin],[0,-sin,cos]];
+    let exp = new Array(3);
+    for (let i=0; i<3; i++) {
+      exp[i] = new Array(3);
+      for (let j=0; j<3; j++) {
+        exp[i][j] = 0;
+        for (let k=0; k<3; k++) {
+          exp[i][j] += exp2[i][k]*exp1[k][j]; 
+        }
+      }
+    }
+    mat.matrix.forEach((r,i) => vec_equal(r,exp[i], `fail row ${i}, ${r}, ${exp[i]}`));
+    done();
+  });
+
+  it("actually works", (done) => {
+    let q = UnitQuaternion.from_axis(0.1, [0,0,1]);
+    let mat = q.matrix;
+    for (let vec of [[1,0,0],[0,1,0],[0,0,1]]) {
+      let exp = q.rotate(vec);
+      let v = mat.map((v,i) => v[0]*vec[0] + v[1]*vec[1] + v[2]*vec[2]);
+      vec_equal(exp,v, `Fail ${vec}, ${exp}, ${v}`);
+    }
+    done();
+  });
+});

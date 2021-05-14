@@ -1,6 +1,6 @@
 {
   "name": "transformer3d",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Coordinate transformation library for 3d vectors",
   "repository" : "github:jonathanvanschenck/transformer3d",
   "main": "index.js",

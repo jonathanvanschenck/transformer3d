@@ -31,8 +31,11 @@ special Euclidean group in 3 dimensions.
     * [~Euclidean](#module_euclidean..Euclidean)
         * [new Euclidean()](#new_module_euclidean..Euclidean_new)
         * [.translation](#module_euclidean..Euclidean+translation) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.json](#module_euclidean..Euclidean+json) ⇒ <code>Object</code>
+        * [.affine](#module_euclidean..Euclidean+affine) ⇒ <code>Object</code>
         * [.set_vecs(qvec, vec)](#module_euclidean..Euclidean+set_vecs) ⇒ <code>this</code>
         * [.set_objects(quat, shift)](#module_euclidean..Euclidean+set_objects) ⇒ <code>this</code>
+        * [.set_as_before(other)](#module_euclidean..Euclidean+set_as_before) ⇒ <code>this</code>
         * [.set_as_composite(first, second)](#module_euclidean..Euclidean+set_as_composite) ⇒ <code>this</code>
         * [.transform_vec(vec)](#module_euclidean..Euclidean+transform_vec) ⇒ <code>Array.&lt;number&gt;</code>
         * [.transform_vec_ip(vec)](#module_euclidean..Euclidean+transform_vec_ip) ⇒ <code>undefined</code>
@@ -57,8 +60,11 @@ is applied before the shift.
 * [~Euclidean](#module_euclidean..Euclidean)
     * [new Euclidean()](#new_module_euclidean..Euclidean_new)
     * [.translation](#module_euclidean..Euclidean+translation) ⇒ <code>Array.&lt;number&gt;</code>
+    * [.json](#module_euclidean..Euclidean+json) ⇒ <code>Object</code>
+    * [.affine](#module_euclidean..Euclidean+affine) ⇒ <code>Object</code>
     * [.set_vecs(qvec, vec)](#module_euclidean..Euclidean+set_vecs) ⇒ <code>this</code>
     * [.set_objects(quat, shift)](#module_euclidean..Euclidean+set_objects) ⇒ <code>this</code>
+    * [.set_as_before(other)](#module_euclidean..Euclidean+set_as_before) ⇒ <code>this</code>
     * [.set_as_composite(first, second)](#module_euclidean..Euclidean+set_as_composite) ⇒ <code>this</code>
     * [.transform_vec(vec)](#module_euclidean..Euclidean+transform_vec) ⇒ <code>Array.&lt;number&gt;</code>
     * [.transform_vec_ip(vec)](#module_euclidean..Euclidean+transform_vec_ip) ⇒ <code>undefined</code>
@@ -81,6 +87,46 @@ Get the effective shift post rotation
 
 **Kind**: instance property of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
 **Returns**: <code>Array.&lt;number&gt;</code> - 3d vector of shift  
+<a name="module_euclidean..Euclidean+json"></a>
+
+#### euclidean.json ⇒ <code>Object</code>
+Get a json representation of this transformation
+
+Format : 
+```json
+{
+    "quat" : {
+        "re" : "real part",
+        "i"  : "i component",
+        "j"  : "j component",
+        "k"  : "k component"
+    },
+    "shift" : [ "x", "y", "z" ],
+    "type"  : "Euclidean/EuclideanReverse"
+}
+```
+Note that the `type` key specifies if the shift is applied before or
+after the rotation.
+
+**Kind**: instance property of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
+<a name="module_euclidean..Euclidean+affine"></a>
+
+#### euclidean.affine ⇒ <code>Object</code>
+Get the affine transformation which is equivalent to this transformation
+
+This (reverse) euclidean transformation (`this.transform_vec(vec)`) is 
+equivalent to an affine transformation of the form: `A * vec^T + b^T`,
+and it is this `A` and `b` which are returned by this method.
+
+Format:
+```json
+{
+    "A" : "3x3 matrix, equivalent to this quaternion's rotation action",
+    "b" : "3d vector, to be applied as a shift AFTER matrix multiplication"
+}
+```
+
+**Kind**: instance property of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
 <a name="module_euclidean..Euclidean+set_vecs"></a>
 
 #### euclidean.set\_vecs(qvec, vec) ⇒ <code>this</code>
@@ -104,6 +150,17 @@ Set the internal quaternion and shift objects
 | --- | --- | --- |
 | quat | <code>UnitQuaternion</code> | the rotation quaternion |
 | shift | <code>Shift</code> | the shift |
+
+<a name="module_euclidean..Euclidean+set_as_before"></a>
+
+#### euclidean.set\_as\_before(other) ⇒ <code>this</code>
+Set this as the composite of this then another (Reverse)Euclidean transformation
+
+**Kind**: instance method of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>Euclidean</code> \| <code>ReverseEuclidean</code> | the transform to be applied after this |
 
 <a name="module_euclidean..Euclidean+set_as_composite"></a>
 
@@ -234,6 +291,7 @@ A module for modeling networks of coordintate axes, and the transformations betw
         * [.transform_quat_ip(quat, start_name, end_name)](#module_network..CoordinateNetwork+transform_quat_ip) ⇒ <code>undefined</code>
         * [.transform_vec(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec) ⇒ <code>Array.&lt;number&gt;</code>
         * [.transform_vec_ip(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec_ip) ⇒ <code>undefined</code>
+        * [.get_affine(start_name, end_name)](#module_network..CoordinateNetwork+get_affine) ⇒ <code>Object</code>
 
 <a name="module_network..CoordinateNetwork"></a>
 
@@ -284,6 +342,7 @@ net.transform_vec([0,0,0], "A", "C"); // returns [2,0,0];
     * [.transform_quat_ip(quat, start_name, end_name)](#module_network..CoordinateNetwork+transform_quat_ip) ⇒ <code>undefined</code>
     * [.transform_vec(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec) ⇒ <code>Array.&lt;number&gt;</code>
     * [.transform_vec_ip(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec_ip) ⇒ <code>undefined</code>
+    * [.get_affine(start_name, end_name)](#module_network..CoordinateNetwork+get_affine) ⇒ <code>Object</code>
 
 <a name="new_module_network..CoordinateNetwork_new"></a>
 
@@ -391,6 +450,41 @@ Transform a vector from `start` to `end` in place
 | start_name | <code>string</code> | the name of the coordinate system that `vec` originates within |
 | end_name | <code>string</code> | the name of the coordinate system that `vec` should be transformed into |
 
+<a name="module_network..CoordinateNetwork+get_affine"></a>
+
+#### coordinateNetwork.get\_affine(start_name, end_name) ⇒ <code>Object</code>
+Get the effective affine transformation from `start` to `end`
+
+If all the transformations between `start` and `end` are Euclidean-type,
+then the total transformation can be expressed as a single Euclidean
+transformation. This method returns the affine transformation which
+is equivalent to that total Euclidean transformation. The form of 
+the affine transformation is `A * vec^T + b^T`, where `vec` is the
+3d vector is `start` coordinates, and the result is the same vector
+in `end` coordinates.
+
+Format:
+```json
+{
+    "A" : "3x3 matrix",
+    "b" : "3d vector"
+}
+```
+
+**Kind**: instance method of [<code>CoordinateNetwork</code>](#module_network..CoordinateNetwork)  
+**Throws**:
+
+- <code>Error</code> if any internal transformations are NOT Euclidean-type
+then this method will fail, since there is no garentee that a
+non-Euclidean-type transformation can be expressed as an affine tranform
+(though many can).
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| start_name | <code>string</code> | the name of the coordinate system that the  transform originates in |
+| end_name | <code>string</code> | the name of the coordinate system that the  transform ends in |
+
 <a name="module_quaternion"></a>
 
 ## quaternion
@@ -413,6 +507,7 @@ group in 3 dimensions.
             * [.yaw](#module_quaternion..UnitQuaternion+yaw) ⇒ <code>Array.&lt;number&gt;</code>
             * [.pitch](#module_quaternion..UnitQuaternion+pitch) ⇒ <code>Array.&lt;number&gt;</code>
             * [.roll](#module_quaternion..UnitQuaternion+roll) ⇒ <code>Array.&lt;number&gt;</code>
+            * [.matrix](#module_quaternion..UnitQuaternion+matrix) ⇒ <code>Matrix</code>
             * [.set_vec(qvec)](#module_quaternion..UnitQuaternion+set_vec) ⇒ <code>this</code>
             * [.set_axis(angle, vec)](#module_quaternion..UnitQuaternion+set_axis) ⇒ <code>this</code>
             * [.set_euler(yaw, pitch, roll)](#module_quaternion..UnitQuaternion+set_euler) ⇒ <code>this</code>
@@ -462,6 +557,7 @@ A quaternion class for rotating 3d vectors
         * [.yaw](#module_quaternion..UnitQuaternion+yaw) ⇒ <code>Array.&lt;number&gt;</code>
         * [.pitch](#module_quaternion..UnitQuaternion+pitch) ⇒ <code>Array.&lt;number&gt;</code>
         * [.roll](#module_quaternion..UnitQuaternion+roll) ⇒ <code>Array.&lt;number&gt;</code>
+        * [.matrix](#module_quaternion..UnitQuaternion+matrix) ⇒ <code>Matrix</code>
         * [.set_vec(qvec)](#module_quaternion..UnitQuaternion+set_vec) ⇒ <code>this</code>
         * [.set_axis(angle, vec)](#module_quaternion..UnitQuaternion+set_axis) ⇒ <code>this</code>
         * [.set_euler(yaw, pitch, roll)](#module_quaternion..UnitQuaternion+set_euler) ⇒ <code>this</code>
@@ -578,6 +674,17 @@ Get the roll for this quaternion's orientation
 TODO : Explain convention
 
 **Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+<a name="module_quaternion..UnitQuaternion+matrix"></a>
+
+#### unitQuaternion.matrix ⇒ <code>Matrix</code>
+Get the equivalent matrix from this quaternion
+
+If A is the matrix returned by this method, then
+the matrix product `A * vec^T` is will produce
+the same vector as `this.rotate(vec)`
+
+**Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+**Returns**: <code>Matrix</code> - 3x3 matrix equivalent to this quaternion  
 <a name="module_quaternion..UnitQuaternion+set_vec"></a>
 
 #### unitQuaternion.set\_vec(qvec) ⇒ <code>this</code>
@@ -1111,7 +1218,7 @@ Transformation objects for coordinate transformations of 3d vectors
     * [~CompositeTransform](#module_transform..CompositeTransform)
         * [new CompositeTransform(first, second)](#new_module_transform..CompositeTransform_new)
     * [~PinholeCameraTransform](#module_transform..PinholeCameraTransform)
-        * [.contructor(Q_key)](#module_transform..PinholeCameraTransform+contructor)
+        * [new PinholeCameraTransform(Q_key)](#new_module_transform..PinholeCameraTransform_new)
     * [~EuclideanReverseTransformMixin()](#module_transform..EuclideanReverseTransformMixin)
     * [~EuclideanTransformMixin()](#module_transform..EuclideanTransformMixin)
     * [~CompositeTransformMixin()](#module_transform..CompositeTransformMixin)
@@ -1466,12 +1573,11 @@ This class is also 'dynamic' in the sense that the Q-matrix of the transformatio
 is not provided at instatiation, but later via `this.update(state)`.
 
 **Kind**: inner class of [<code>transform</code>](#module_transform)  
-<a name="module_transform..PinholeCameraTransform+contructor"></a>
+<a name="new_module_transform..PinholeCameraTransform_new"></a>
 
-#### pinholeCameraTransform.contructor(Q_key)
+#### new PinholeCameraTransform(Q_key)
 Constructor
 
-**Kind**: instance method of [<code>PinholeCameraTransform</code>](#module_transform..PinholeCameraTransform)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1487,6 +1593,7 @@ This mixin does several things to the base classes it acts on:
    instance as `this.euclidean`
    2) It updates all the `this.transform...` methods to reference the 
    internal Euclidean vector and quaternion operations.
+   3) Add a flag `this.is_euclidean` for checking
 
 This intent is for subclasses that inherit from this to override either the
 constructor and modify `this.euclidean` at instantiation (e.g. `EuclideanReverseStaticTransform`)
@@ -1506,6 +1613,7 @@ This mixin does several things to the base classes it acts on:
    instance as `this.euclidean`
    2) It updates all the `this.transform...` methods to reference the 
    internal Euclidean vector and quaternion operations.
+   3) Add a flag `this.is_euclidean` for checking
 
 This intent is for subclasses that inherit from this to override either the
 constructor and modify `this.euclidean` at instantiation (e.g. `EuclideanStaticTransform`)

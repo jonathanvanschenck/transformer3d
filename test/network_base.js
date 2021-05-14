@@ -202,3 +202,67 @@ describe("Quaternion tranforms and orientations with networks",() => {
     done();
   });
 }); 
+
+
+describe("Affine transformations",() => {
+   
+  let n = (new CoordinateNetwork())
+       .connect_systems("a", new t.ShiftStaticTransform([0,1,0]), "b")
+       .connect_systems("b", new t.RotateStaticTransform(-Math.PI/2, [1,0,0]), "c")
+       .connect_systems("c", new t.RotateStaticTransform(Math.PI/2, [0,1,0]), "d")
+       .connect_systems("d", new t.PinholeCameraTransform("Q"), "e")
+       .compile();
+
+  let isqrt2 = 1/Math.sqrt(2);
+
+  it("Failure for non euclideans", (done) => {
+    
+    assert.strict.throws(() => {
+      n.get_affine("d","e");
+    }, Error, "Fail, one step");
+    
+    assert.strict.throws(() => {
+      n.get_affine("a","e");
+    }, Error, "Fail, many step");
+
+    done();
+  });
+
+
+  it("Can get identity affine", (done) => {
+    
+    let aff = n.get_affine("b", "b");
+
+    vec_equal_approx([0,0,0], aff.b, "fail vec");
+    aff.A.forEach((r,i) => {
+      let v = [0,0,0];
+      v[i] = 1;
+      vec_equal_approx(r,v, "fail row " + i);
+    });
+    done();
+  });
+
+  it("Can get affine composite", (done) => {
+    
+    let aff = n.get_affine("a", "d");
+    vec_equal_approx([-1,0,0], aff.b, "fail vec");
+    let exp1 = [[1,0,0],[0,0,-1],[0,1,0]]; // rotate -90 about x
+    let exp2 = [[0,0,-1],[0,1,0],[1,0,0]]; // rotate 90 about y
+    // exp = exp2 * exp1
+    let exp = new Array(3);
+    for ( let i = 0; i < 3; i ++ ) {
+      exp[i] = new Array(3);
+      for ( let j = 0; j < 3; j ++ ) {
+        exp[i][j] = 0;
+        for ( let k = 0; k < 3; k ++ ) {
+          exp[i][j] += exp2[i][k]*exp1[k][j];
+        }
+      }
+    }
+    aff.A.forEach((r,i) => {
+      vec_equal_approx(r,exp[i], "fail row " + i);
+    });
+    done();
+  });
+
+}); 
