@@ -33,6 +33,7 @@ special Euclidean group in 3 dimensions.
         * [.translation](#module_euclidean..Euclidean+translation) ⇒ <code>Array.&lt;number&gt;</code>
         * [.json](#module_euclidean..Euclidean+json) ⇒ <code>Object</code>
         * [.affine](#module_euclidean..Euclidean+affine) ⇒ <code>Object</code>
+        * [.affine_inv](#module_euclidean..Euclidean+affine_inv) ⇒ <code>Object</code>
         * [.set_vecs(qvec, vec)](#module_euclidean..Euclidean+set_vecs) ⇒ <code>this</code>
         * [.set_objects(quat, shift)](#module_euclidean..Euclidean+set_objects) ⇒ <code>this</code>
         * [.set_as_before(other)](#module_euclidean..Euclidean+set_as_before) ⇒ <code>this</code>
@@ -62,6 +63,7 @@ is applied before the shift.
     * [.translation](#module_euclidean..Euclidean+translation) ⇒ <code>Array.&lt;number&gt;</code>
     * [.json](#module_euclidean..Euclidean+json) ⇒ <code>Object</code>
     * [.affine](#module_euclidean..Euclidean+affine) ⇒ <code>Object</code>
+    * [.affine_inv](#module_euclidean..Euclidean+affine_inv) ⇒ <code>Object</code>
     * [.set_vecs(qvec, vec)](#module_euclidean..Euclidean+set_vecs) ⇒ <code>this</code>
     * [.set_objects(quat, shift)](#module_euclidean..Euclidean+set_objects) ⇒ <code>this</code>
     * [.set_as_before(other)](#module_euclidean..Euclidean+set_as_before) ⇒ <code>this</code>
@@ -123,6 +125,24 @@ Format:
 {
     "A" : "3x3 matrix, equivalent to this quaternion's rotation action",
     "b" : "3d vector, to be applied as a shift AFTER matrix multiplication"
+}
+```
+
+**Kind**: instance property of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
+<a name="module_euclidean..Euclidean+affine_inv"></a>
+
+#### euclidean.affine\_inv ⇒ <code>Object</code>
+Get the inverse affine transformation associated with this transformation
+ 
+This method gets the inverse transformation of `this.affine`. Such that if
+A and b are aquired from `this.affine`, and A' and b' are aquired from
+this getter, then `vec^T = A' * (A * vec^T + b^T) + b'^T`
+
+Format:
+```json
+{
+    "A" : "3x3 matrix",
+    "b" : "3d vector"
 }
 ```
 
@@ -508,6 +528,7 @@ group in 3 dimensions.
             * [.pitch](#module_quaternion..UnitQuaternion+pitch) ⇒ <code>Array.&lt;number&gt;</code>
             * [.roll](#module_quaternion..UnitQuaternion+roll) ⇒ <code>Array.&lt;number&gt;</code>
             * [.matrix](#module_quaternion..UnitQuaternion+matrix) ⇒ <code>Matrix</code>
+            * [.matrix_inv](#module_quaternion..UnitQuaternion+matrix_inv) ⇒ <code>Matrix</code>
             * [.set_vec(qvec)](#module_quaternion..UnitQuaternion+set_vec) ⇒ <code>this</code>
             * [.set_axis(angle, vec)](#module_quaternion..UnitQuaternion+set_axis) ⇒ <code>this</code>
             * [.set_euler(yaw, pitch, roll)](#module_quaternion..UnitQuaternion+set_euler) ⇒ <code>this</code>
@@ -558,6 +579,7 @@ A quaternion class for rotating 3d vectors
         * [.pitch](#module_quaternion..UnitQuaternion+pitch) ⇒ <code>Array.&lt;number&gt;</code>
         * [.roll](#module_quaternion..UnitQuaternion+roll) ⇒ <code>Array.&lt;number&gt;</code>
         * [.matrix](#module_quaternion..UnitQuaternion+matrix) ⇒ <code>Matrix</code>
+        * [.matrix_inv](#module_quaternion..UnitQuaternion+matrix_inv) ⇒ <code>Matrix</code>
         * [.set_vec(qvec)](#module_quaternion..UnitQuaternion+set_vec) ⇒ <code>this</code>
         * [.set_axis(angle, vec)](#module_quaternion..UnitQuaternion+set_axis) ⇒ <code>this</code>
         * [.set_euler(yaw, pitch, roll)](#module_quaternion..UnitQuaternion+set_euler) ⇒ <code>this</code>
@@ -640,6 +662,9 @@ Will return an object of the form:
 #### unitQuaternion.angle ⇒ <code>number</code>
 Get the angle of this quaternion's rotation
 
+Note, this will always be a positive angle, but when used
+with `this.axis`, will still produce the correct rotation
+
 **Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
 <a name="module_quaternion..UnitQuaternion+axis"></a>
 
@@ -685,6 +710,17 @@ the same vector as `this.rotate(vec)`
 
 **Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
 **Returns**: <code>Matrix</code> - 3x3 matrix equivalent to this quaternion  
+<a name="module_quaternion..UnitQuaternion+matrix_inv"></a>
+
+#### unitQuaternion.matrix\_inv ⇒ <code>Matrix</code>
+Get the equivalent inverse matrix from this quaternion
+
+If A is the matrix returned by this method, then
+the matrix product `A * vec^T` is will produce
+the same vector as `this.unrotate(vec)`
+
+**Kind**: instance property of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+**Returns**: <code>Matrix</code> - 3x3 inverse matrix equivalent to this quaternion  
 <a name="module_quaternion..UnitQuaternion+set_vec"></a>
 
 #### unitQuaternion.set\_vec(qvec) ⇒ <code>this</code>
