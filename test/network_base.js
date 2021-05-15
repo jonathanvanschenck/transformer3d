@@ -265,4 +265,28 @@ describe("Affine transformations",() => {
     done();
   });
 
+  it("Can get affine in reverse", (done) => {
+    
+    let aff = n.get_affine("d", "a");
+    vec_equal_approx([0,-1,0], aff.b, "fail vec");
+    let exp1 = [[1,0,0],[0,0,1],[0,-1,0]]; // rotate 90 about x
+    let exp2 = [[0,0,1],[0,1,0],[-1,0,0]]; // rotate -90 about y
+    // exp = exp2 * exp1
+    let exp = new Array(3);
+    for ( let i = 0; i < 3; i ++ ) {
+      exp[i] = new Array(3);
+      for ( let j = 0; j < 3; j ++ ) {
+        exp[i][j] = 0;
+        for ( let k = 0; k < 3; k ++ ) {
+          exp[i][j] += exp1[i][k]*exp2[k][j];
+        }
+      }
+    }
+    aff.A.forEach((r,i) => {
+      vec_equal_approx(r,exp[i], "fail row " + i);
+    });
+    done();
+  });
+
+
 }); 

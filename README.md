@@ -238,7 +238,8 @@ See the [full API](API.md) for more details on advanced usage.
 The author welcomes any feedback, pull requests, feature request, and forks!
 
 # Known Bugs
-
+ - If the real part of a `UnitQuaternion` is negative, that might produce some
+ strange behavoir with some of the composite getter functions, like `.angle`
 
 # TODO
  - Finish commenting the pinhole camera module
