@@ -197,6 +197,49 @@ const net = (new CoordinateNetwork())
 net.transform_vec([0, 0, 10], "world", "image"); // projects vector into an image
 ```
 
+### Homogeneous Transformations
+Just like with affine transformations, this library also exposes transformations for [homogeneous coordinates](https://en.wikipedia.org/wiki/Homogeneous_coordinates)
+. Briefly, homogeneous coordinates are a coordinate representation in `n+1` dimensions, in our case
+this means coordinates are expressed as `[ x, y, z, w ]`, where the 3d vector can be recovered as
+`[ x/w, y/w, z/w ]`. A homogeneous (also called projective) transformation is then any 4x4 matrix
+which operates on the homogeneous coordinates. All affine transformations can be expressed as 
+a homogeneous transformation, but the pinhole camera transformation (discussed above) can also
+be expressed as a homogeneous transformation.
+
+`CoordinateNetwork` instances expose a method `.get_homogeneous( start, end )` which will return
+the homogeneous transformation which is equivalent to the transformation between `start` and `end`.
+Note that just like for affine transformations, this method will only work if all the subtransformations
+between `start` and `end` are homogeneous-compatible (this includes `transform.PinholeCameraTransform`
+and all `transform.EuclideanTransformMixin` derivatives). The method will return the 4x4 matrix for which
+the following are equivalent:
+
+```javascript
+const net = (new CoordinateNetwork())
+  .connect_systems("camera", new transform.PinholeCameraTransform("Q" /* data key */), "image")
+  .connect_systems("world", new transform.ShiftStaticTransform([0,0,1]), "camera") // the world is 1m below the camera
+  .compile()
+  .update({ Q : [[1,0,0,-50],[0,1,0,-50],[0,0,1,100],[0,0,0.1,0]] }); // set Q matrix
+
+// Use the network to transform a vector
+let [i,j,d] = net.transform_vec([0, 0, 10], "world", "image");
+
+// Get the homogeneous matrix and transform the vector yourself
+let mat = net.get_homogeneous( "world", "image" ); // 4x4 matrix
+let world_vec = [0,0,10,1]; // same world vector in homogeneous coordinates
+// compute matrix product: img_vec^T = mat * world_vec^T
+let img_vec = [0,0,0,0]; 
+for ( let _i = 0; _i < 4; _i ++ ) {
+  for ( let _j = 0; _j < 4; _j ++) {
+      img_vec[_i] += mat[_i][_j] * world_vec[_j]
+    }
+}
+let [ ip, jp, dp, wp ] = img_vec;
+
+i === ip / wp; // returns True
+j === jp / wp; // returns True
+d === dp / wp; // returns True
+```
+
 ## Quaternion Transformations
 This library, in addition to transforming 3d vectors, allows supports transforming
 rigid body orientations in the form of unit quaternions (`UnitQuaternion` class).

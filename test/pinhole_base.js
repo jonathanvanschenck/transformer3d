@@ -15,10 +15,17 @@ function vec_equal(a,b,msg) {
 
 describe("Base functions", () => {
   let Q = [
-    [ 0, 0, 0,  -1],
-    [ 0, 0, 0,  -1],
+    [ 1, 0, 0,  -1],
+    [ 0, 1, 0,  -1],
     [ 0, 0, 0,   3],
     [ 0, 0, 0.5, 0]
+  ];
+
+  let Qinv = [
+    [ 1, 0, 1/3, 0],
+    [ 1, 0, 1/3, 0],
+    [ 0, 0,   0, 2],
+    [ 0, 0, 1/3, 0]
   ];
 
   it("image works", (done) => {
@@ -27,9 +34,9 @@ describe("Base functions", () => {
       [ [0, 0, 0] , [1, 1, Infinity] ],
       [ [0, 0, 1] , [1, 1, 6] ],
       [ [0, 0, -1] , [1, 1, -6] ],
-      [ [1, 1, 1] , [1.5, 1.5, 6] ]
+      [ [1, 1, 10] , [1.3, 1.3, 0.6] ]
     ]) {
-      image( wvec, ivec, Q );
+      image( wvec, ivec, Qinv );
       vec_equal( ivec, exp , `fail ${wvec} -> ${ivec} != ${exp}`);
     }
     done();
@@ -72,9 +79,9 @@ describe("Pinhole Camera class", () => {
 
   it("methods work", (done) => {
     let q = (new PinholeCameraPair()).set_Q( Q );
-    let wvec = [ 1, 1, 1 ];
+    let wvec = [ 1, 1, 10 ];
     let ivec = q.image( wvec );
-    vec_equal( ivec, [ 1.5, 1.5, 6 ], "image failed" );
+    vec_equal( ivec, [ 1.3, 1.3, 0.6 ], "image failed" );
     wvec = q.project([ 1, 1, 1 ]);
     vec_equal( wvec, [ 0, 0, 6 ], "project failed");
     done();

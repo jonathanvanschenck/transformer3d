@@ -19,6 +19,27 @@ function vec_equal_approx (a, b, msg) {
     if (Math.abs(a[i] - b[i]) > 1e-9) assert.fail(msg ? msg : "");
 }
 
+function mult(a,b,i,k,j) {
+  let r = [];
+  for (let _i = 0; _i < i; _i ++ ) {
+    r[_i] = [];
+    for (let _j = 0; _j < j; j ++) {
+      r[_i][_j] = 0;
+      for (let _k = 0; _k < k; k ++ ) {
+        r[_i][_j] += a[_i][_k] * b[_k][_j];
+      }
+    }
+  }
+  return r;
+}
+
+function mat_equal_approx (a, b, msg) {
+  for (let i = 0; i < a.length; i++) {
+    for (let j = 0; j < a[i].length; j ++) {
+      if (Math.abs(a[i][j] - b[i][j]) > 1e-9) assert.fail((msg ? msg : "") + `a[${i}][${j}]=${a[i][j]} vs b[${i}][${j}]=${b[i][j]}`);
+    }
+  }
+}
 
 describe("Coordinate System constructors", () => {
   
@@ -287,6 +308,92 @@ describe("Affine transformations",() => {
     });
     done();
   });
+}); 
+
+describe("Homogeneous Transformations",() => {
+   
+  let n = (new CoordinateNetwork())
+       .connect_systems("a", new t.ShiftStaticTransform([0,1,0]), "b")
+       .connect_systems("b", new t.RotateStaticTransform(-Math.PI/2, [1,0,0]), "c")
+       .connect_systems("c", new t.RotateStaticTransform(Math.PI/2, [0,1,0]), "d")
+       .connect_systems("d", new t.PinholeCameraTransform("Q"), "e")
+       .connect_systems("e", new t.Transform(), "f")
+       .compile()
+       .update({ Q : [
+          [ 1, 0, 0,  -1],
+          [ 0, 1, 0,  -1],
+          [ 0, 0, 0,   3],
+          [ 0, 0, 0.5, 0]
+        ]});
+
+  let isqrt2 = 1/Math.sqrt(2);
+
+  it("Failure for non euclideans", (done) => {
+    
+    assert.strict.throws(() => {
+      n.get_homogeneous("e","f");
+    }, Error, "Fail, one step");
+    
+    assert.strict.throws(() => {
+      n.get_homogeneous("a","f");
+    }, Error, "Fail, many step");
+
+    done();
+  });
 
 
+  it("Can get identity homogeneous", (done) => {
+    
+    let mat = n.get_homogeneous("b", "b");
+    mat_equal_approx(mat, [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]], "fail identity");
+    done();
+  });
+
+  it("Can get homogeneous singles", (done) => {
+    
+    let mat = n.get_homogeneous("a", "b");
+    mat_equal_approx(mat, [[1,0,0,0],[0,1,0,1],[0,0,1,0],[0,0,0,1]], "fail shift");
+    mat = n.get_homogeneous("b", "c");
+    mat_equal_approx(mat, [[1,0,0,0],[0,0,-1,0],[0,1,0,0],[0,0,0,1]], "fail rotate");
+    mat = n.get_homogeneous("c", "d");
+    mat_equal_approx(mat, [[0,0,-1,0],[0,1,0,0],[1,0,0,0],[0,0,0,1]], "fail rotate2");
+    mat = n.get_homogeneous("e", "d");
+    mat_equal_approx(mat, [
+    [ 1, 0, 0,  -1],
+    [ 0, 1, 0,  -1],
+    [ 0, 0, 0,   3],
+    [ 0, 0, 0.5, 0]
+  ], "fail pinhole");
+    done();
+  });
+
+  it("Can get homogeneous composite", (done) => {
+    
+    let mat = n.get_homogeneous("a", "c");
+    let exp = [[1,0,0,0],[0,0,-1,0],[0,1,0,1],[0,0,0,1]];
+    mat_equal_approx(mat, exp, "fail euclidean composite");
+
+    mat = n.get_homogeneous("c", "e");
+    exp = [[ 1/3,  0.        , -1.        ,  0.        ],
+           [ 1/3,  1.        ,  0.        ,  0.        ],
+           [ 0. ,  0.        ,  0.        ,  2.        ],
+           [ 1/3,  0.        ,  0.        ,  0.        ]]
+    mat_equal_approx(mat, exp, "fail full composite");
+    done();
+  });
+
+  it("Can get homogeneous in reverse", (done) => {
+    
+    let mat = n.get_homogeneous("c", "a");
+    let exp = [[1,0,0,0],[0,0,1,-1],[0,-1,0,0],[0,0,0,1]];
+    mat_equal_approx(mat, exp, "fail euclidean composite");
+
+    mat = n.get_homogeneous("e", "c");
+    exp = [[ 0. ,  0. ,  0. ,  3. ],
+           [ 0. ,  1. ,  0. , -1. ],
+           [-1. ,  0. ,  0. ,  1. ],
+           [ 0. ,  0. ,  0.5,  0. ]];
+    mat_equal_approx(mat, exp, "fail full composite");
+    done();
+  });
 }); 

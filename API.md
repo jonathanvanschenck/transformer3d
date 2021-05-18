@@ -20,6 +20,31 @@ group in 3 dimensions.</p>
 </dd>
 </dl>
 
+## Functions
+
+<dl>
+<dt><a href="#image">image()</a></dt>
+<dd><p>Some details:
+Q: [
+  [1, 0,   0, -ci],
+  [0, 1,   0, -cj],
+  [0, 0,   0,   f],
+  [0, 0, 1/B,   0]
+]
+Such that :  [x,y,z,w]^T = Q * [ i, j, d, 1]^T</p>
+<p>Qinv: [
+  [1, 0, ci/f, 0],
+  [0, 1, cj/f, 0],
+  [0, 0,    0, B],
+  [0, 0,  1/f, 0]
+]
+Such that :  [i,j,d,w]^T = Qinv * [ x, y, z, 1]^T</p>
+<p>Where ci,cj are the pixel positions of the centers of the ccd,
+f is the focal length (in pixels, NOT meters), and B is the 
+distance (in meters, NOT pixels) between the two cameras</p>
+</dd>
+</dl>
+
 <a name="module_euclidean"></a>
 
 ## euclidean
@@ -34,6 +59,8 @@ special Euclidean group in 3 dimensions.
         * [.json](#module_euclidean..Euclidean+json) ⇒ <code>Object</code>
         * [.affine](#module_euclidean..Euclidean+affine) ⇒ <code>Object</code>
         * [.affine_inv](#module_euclidean..Euclidean+affine_inv) ⇒ <code>Object</code>
+        * [.matrix](#module_euclidean..Euclidean+matrix) ⇒ <code>Matrix</code>
+        * [.matrix_inv](#module_euclidean..Euclidean+matrix_inv) ⇒ <code>Matrix</code>
         * [.set_vecs(qvec, vec)](#module_euclidean..Euclidean+set_vecs) ⇒ <code>this</code>
         * [.set_objects(quat, shift)](#module_euclidean..Euclidean+set_objects) ⇒ <code>this</code>
         * [.set_as_before(other)](#module_euclidean..Euclidean+set_as_before) ⇒ <code>this</code>
@@ -64,6 +91,8 @@ is applied before the shift.
     * [.json](#module_euclidean..Euclidean+json) ⇒ <code>Object</code>
     * [.affine](#module_euclidean..Euclidean+affine) ⇒ <code>Object</code>
     * [.affine_inv](#module_euclidean..Euclidean+affine_inv) ⇒ <code>Object</code>
+    * [.matrix](#module_euclidean..Euclidean+matrix) ⇒ <code>Matrix</code>
+    * [.matrix_inv](#module_euclidean..Euclidean+matrix_inv) ⇒ <code>Matrix</code>
     * [.set_vecs(qvec, vec)](#module_euclidean..Euclidean+set_vecs) ⇒ <code>this</code>
     * [.set_objects(quat, shift)](#module_euclidean..Euclidean+set_objects) ⇒ <code>this</code>
     * [.set_as_before(other)](#module_euclidean..Euclidean+set_as_before) ⇒ <code>this</code>
@@ -147,6 +176,28 @@ Format:
 ```
 
 **Kind**: instance property of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
+<a name="module_euclidean..Euclidean+matrix"></a>
+
+#### euclidean.matrix ⇒ <code>Matrix</code>
+Get the equivalent homogeneous matrix from this transformation
+
+If A is the matrix returned by this method, then
+the matrix product `[x',y',z',w']^T = A * [x,y,z,w]^T` is will produce
+the same inhomogenous vector ([x'/w', y'/w', z'/w'])` as `this.transform_vec([x,y,z])`
+
+**Kind**: instance property of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
+**Returns**: <code>Matrix</code> - 4x4 matrix equivalent to this transformation  
+<a name="module_euclidean..Euclidean+matrix_inv"></a>
+
+#### euclidean.matrix\_inv ⇒ <code>Matrix</code>
+Get the equivalent homogeneous inverse matrix from this transformation
+
+If A is the matrix returned by this method, then
+the matrix product `[x',y',z',w']^T = A * [x,y,z,w]^T` is will produce
+the same inhomogenous vector ([x'/w', y'/w', z'/w'])` as `this.untransform_vec([x,y,z])`
+
+**Kind**: instance property of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
+**Returns**: <code>Matrix</code> - 4x4 inverse matrix equivalent to this transformation  
 <a name="module_euclidean..Euclidean+set_vecs"></a>
 
 #### euclidean.set\_vecs(qvec, vec) ⇒ <code>this</code>
@@ -312,6 +363,7 @@ A module for modeling networks of coordintate axes, and the transformations betw
         * [.transform_vec(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec) ⇒ <code>Array.&lt;number&gt;</code>
         * [.transform_vec_ip(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec_ip) ⇒ <code>undefined</code>
         * [.get_affine(start_name, end_name)](#module_network..CoordinateNetwork+get_affine) ⇒ <code>Object</code>
+        * [.get_homogeneous(start_name, end_name)](#module_network..CoordinateNetwork+get_homogeneous) ⇒ <code>Matrix</code>
 
 <a name="module_network..CoordinateNetwork"></a>
 
@@ -363,6 +415,7 @@ net.transform_vec([0,0,0], "A", "C"); // returns [2,0,0];
     * [.transform_vec(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec) ⇒ <code>Array.&lt;number&gt;</code>
     * [.transform_vec_ip(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec_ip) ⇒ <code>undefined</code>
     * [.get_affine(start_name, end_name)](#module_network..CoordinateNetwork+get_affine) ⇒ <code>Object</code>
+    * [.get_homogeneous(start_name, end_name)](#module_network..CoordinateNetwork+get_homogeneous) ⇒ <code>Matrix</code>
 
 <a name="new_module_network..CoordinateNetwork_new"></a>
 
@@ -498,6 +551,33 @@ Format:
 then this method will fail, since there is no garentee that a
 non-Euclidean-type transformation can be expressed as an affine tranform
 (though many can).
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| start_name | <code>string</code> | the name of the coordinate system that the  transform originates in |
+| end_name | <code>string</code> | the name of the coordinate system that the  transform ends in |
+
+<a name="module_network..CoordinateNetwork+get_homogeneous"></a>
+
+#### coordinateNetwork.get\_homogeneous(start_name, end_name) ⇒ <code>Matrix</code>
+Get the effective homogeneous matrix transformation from `start` to `end`
+
+If all the transformations between `start` and `end` are homogeneous-type,
+(all Euclidean-types and projective-types, like PinholeCameraTransform)
+then the total transformation can be expressed as a single homogeneous
+transformation. This method returns the 4x4 matrix which
+is equivalent to that total homogeneous transformation. The form of 
+the homogeneous transformation is `[x',y',z',w']^T = A * [x,y,z,1]^T`,
+where `[x,y,z]` is a vector in `start` coordinates, and `[x'/w', y'/w', z'/w']`
+is the corresponding vector in `end` coordinates
+
+**Kind**: instance method of [<code>CoordinateNetwork</code>](#module_network..CoordinateNetwork)  
+**Returns**: <code>Matrix</code> - 4x4 matrix transformation  
+**Throws**:
+
+- <code>Error</code> if any internal transformations are NOT homogeneous-type
+then this method will fail
 
 
 | Param | Type | Description |
@@ -1682,3 +1762,28 @@ other base classes which might already have those methods defined in special way
 Use like: `class NewTranform extends CompositeTransformMixin(Base) {}`
 
 **Kind**: inner method of [<code>transform</code>](#module_transform)  
+<a name="image"></a>
+
+## image()
+Some details:
+Q: [
+  [1, 0,   0, -ci],
+  [0, 1,   0, -cj],
+  [0, 0,   0,   f],
+  [0, 0, 1/B,   0]
+]
+Such that :  [x,y,z,w]^T = Q * [ i, j, d, 1]^T
+
+Qinv: [
+  [1, 0, ci/f, 0],
+  [0, 1, cj/f, 0],
+  [0, 0,    0, B],
+  [0, 0,  1/f, 0]
+]
+Such that :  [i,j,d,w]^T = Qinv * [ x, y, z, 1]^T
+
+Where ci,cj are the pixel positions of the centers of the ccd,
+f is the focal length (in pixels, NOT meters), and B is the 
+distance (in meters, NOT pixels) between the two cameras
+
+**Kind**: global function  
