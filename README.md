@@ -3,7 +3,7 @@ A node.js library for transforming between a 3d coordinate systems. Check it out
 
 # Installation
 ```bash
-npm install transfomer3d
+npm install transformer3d
 ```
 
 # Basic Usage
