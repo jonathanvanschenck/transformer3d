@@ -15,7 +15,7 @@ name, and edges are instances of the `transform.Transform` object (or it's many 
 ## Vector Transformations
 ### Euclidean Transformations
 #### Basic example
-Take for example, a network with two coodinate systems "A" and "B", where the origin of B is 
+Take for example, a network with two coordinate systems "A" and "B", where the origin of B is 
 at the vector `[ 1, 0, 0 ]` in A's coordinate frame. Then the network can be built up as:
 ```javascript
 const { CoordinateNetwork, transform } = require('transformer3d');
@@ -178,7 +178,7 @@ shift from "A" to "B" *before* rotating from "B" to "C".
 As a final note, the `net.get_affine` method will only work if all the internal transformations between
 the two coordinate systems are Euclidean-type. If any non-Euclidean transformations are present in the
 chain between the two endpoints, the method will throw an error. This is because generic transformation
-objects are not garenteed to have an effect affine transformation equivalent (e.g. the `transform.PinholeCameraTransform`
+objects are not guaranteed to have an effect affine transformation equivalent (e.g. the `transform.PinholeCameraTransform`
 is distinctly *not* affine in nature, since disparity and distance are inversely related to one another).
 
 ### Pinhole Camera Transformations
@@ -257,22 +257,16 @@ let q = UnitQuaternion.from_axis(
 )
 ```
 
-Suppose that this orientation was constructed in a coordinate frame "A" where x points in 
-the "up" direction, however there is another coordinate frame "B" where x points in the
-"left" direction (which can be reached from A by rotating +90 degrees around the z-axis).
-Then the orientation quaternion `q` can be transformed into this new coordinate system by:
+Suppose that there is another coordinate reference frame B which is reached from A by
+rotating around A's z-axis by +90 degrees. One can transform the quaternion `q` to express
+it's orientation relative to the B axis via the following:
 ```javascript
 const net = (new CoordinateNetwork())
   .connect_systems("A", new transform.RotateStaticTransform( Math.PI/2, [0,0,1] ), "B")
   .compile();
 
-net.transform_quat(q); // returns q', which is the same orientation as q, but in B's frame
+net.orient_quat(q); // returns q', which is the same orientation as q, but referenced against B
 ```
-
-Important note, internally, the `UnitQuaternion` class is also used to handle the rotations
-between coordinate system. However, it is important to remember that the these rotational
-quaternions, while computationally indistinguisable from orientation quaternions, are 
-actually acomplishing different tasks theoretically.
 
 # Advanced Usage
 See the [full API](API.md) for more details on advanced usage.
@@ -286,7 +280,7 @@ The author welcomes any feedback, pull requests, feature request, and forks!
 
 # TODO
  - Finish commenting the pinhole camera module
- - Consider removing `.orient` from the transform module, and making it exclusively a
- UnitQuaterion method
+ - Consider removing `.transform_quat` from the transform module, since is is pretty niche
+ - Should in place transformations return the mutated object, or `undefined`? c.f. `Euclidean.transform_vec_ip`
  - Should the quaternion module just be a separate npm pacakge?
 

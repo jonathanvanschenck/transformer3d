@@ -172,56 +172,108 @@ describe("Quaternion tranforms and orientations with networks",() => {
 
   let isqrt2 = 1/Math.sqrt(2);
 
-  it("Tranform quats over a single gap works", (done) => {
+  it("Orient quats over a single gap works", (done) => {
     let q, q2;
 
     q = UQ.from_axis(Math.PI/2, [1,0,0]);
 
     // Test no op
-    q2 = n.transform_quat(q, "a", "b");
+    q2 = n.orient_quat(q, "a", "b");
     vec_equal_approx(q2.qvec, [isqrt2, isqrt2, 0, 0], "fail a->b");
 
     // Test rotation in same direction
-    // x * x * ~x = x
-    q2 = n.transform_quat(q, "b", "c");
-    vec_equal_approx(q2.qvec, [isqrt2, isqrt2, 0, 0], "fail b->c");
+    // x * x = -x
+    q2 = n.orient_quat(q, "b", "c");
+    vec_equal_approx(q2.qvec, UQ.from_axis(Math.PI,[1,0,0]).qvec, "fail b->c");
 
     // Test rotation in opposite directions
-    // ~y * x * y = z
-    q2 = n.transform_quat(q, "c", "d");
-    vec_equal_approx(q2.qvec, [isqrt2, 0, 0, isqrt2], "fail c->d");
+    // ~y * x = wack
+    q2 = n.orient_quat(q, "c", "d");
+    vec_equal_approx(q2.qvec, [0.5,0.5,-0.5,0.5], "fail c->d");
 
     // Test back transforms
-    // y * x * ~y = -z
-    q2 = n.transform_quat(q, "d", "c");
-    vec_equal_approx(q2.qvec, [isqrt2, 0, 0, -isqrt2], "fail d->c");
+    // y * x = wack
+    q2 = n.orient_quat(q, "d", "c");
+    vec_equal_approx(q2.qvec, [0.5,0.5,0.5,-0.5], "fail d->c");
 
 
     done();
   });
 
-  it("Tranform quats over a multiple gaps works", (done) => {
+  it("Orient quats over a multiple gaps works", (done) => {
     let q, q2;
 
     q = UQ.from_axis(Math.PI/2, [1,0,0]);
 
     // Test no op then rotate
-    // x * x * ~x = x
-    q2 = n.transform_quat(q, "a", "c");
-    vec_equal_approx(q2.qvec, [isqrt2, isqrt2, 0, 0], "fail a->c");
+    // x * x = 2x
+    q2 = n.orient_quat(q, "a", "c");
+    vec_equal_approx(q2.qvec, UQ.from_axis(Math.PI,[1,0,0]).qvec, "fail a->c");
     
     // Test forward direction
-    // ~y * x * x * ~x * y = ~y * x * y = z
-    q2 = n.transform_quat(q, "a", "d");
-    vec_equal_approx(q2.qvec, [isqrt2, 0,0, isqrt2], "fail a->d");
+    // ~y * x * x = ~y * 2x = 
+    q2 = n.orient_quat(q, "a", "d");
+    vec_equal_approx(q2.qvec, [0, isqrt2, 0, isqrt2], "fail d->a");
     
     // Test reverse direction
-    // ~x * y * x * ~y * x = ~x * ~z * x = ~y
-    q2 = n.transform_quat(q, "d", "a");
-    vec_equal_approx(q2.qvec, [isqrt2, 0, -isqrt2, 0], "fail d->a");
+    // ~x * y * x = -z
+    q2 = n.orient_quat(q, "d", "a");
+    vec_equal_approx(q2.qvec, [isqrt2, 0, 0, -isqrt2], "fail d->a");
 
     done();
   });
+
+
+//   it("Tranform quats over a single gap works", (done) => {
+//     let q, q2;
+// 
+//     q = UQ.from_axis(Math.PI/2, [1,0,0]);
+// 
+//     // Test no op
+//     q2 = n.transform_quat(q, "a", "b");
+//     vec_equal_approx(q2.qvec, [isqrt2, isqrt2, 0, 0], "fail a->b");
+// 
+//     // Test rotation in same direction
+//     // x * x * ~x = x
+//     q2 = n.transform_quat(q, "b", "c");
+//     vec_equal_approx(q2.qvec, [isqrt2, isqrt2, 0, 0], "fail b->c");
+// 
+//     // Test rotation in opposite directions
+//     // ~y * x * y = z
+//     q2 = n.transform_quat(q, "c", "d");
+//     vec_equal_approx(q2.qvec, [isqrt2, 0, 0, isqrt2], "fail c->d");
+// 
+//     // Test back transforms
+//     // y * x * ~y = -z
+//     q2 = n.transform_quat(q, "d", "c");
+//     vec_equal_approx(q2.qvec, [isqrt2, 0, 0, -isqrt2], "fail d->c");
+// 
+// 
+//     done();
+//   });
+// 
+//   it("Tranform quats over a multiple gaps works", (done) => {
+//     let q, q2;
+// 
+//     q = UQ.from_axis(Math.PI/2, [1,0,0]);
+// 
+//     // Test no op then rotate
+//     // x * x * ~x = x
+//     q2 = n.transform_quat(q, "a", "c");
+//     vec_equal_approx(q2.qvec, [isqrt2, isqrt2, 0, 0], "fail a->c");
+//     
+//     // Test forward direction
+//     // ~y * x * x * ~x * y = ~y * x * y = z
+//     q2 = n.transform_quat(q, "a", "d");
+//     vec_equal_approx(q2.qvec, [isqrt2, 0,0, isqrt2], "fail a->d");
+//     
+//     // Test reverse direction
+//     // ~x * y * x * ~y * x = ~x * ~z * x = ~y
+//     q2 = n.transform_quat(q, "d", "a");
+//     vec_equal_approx(q2.qvec, [isqrt2, 0, -isqrt2, 0], "fail d->a");
+// 
+//     done();
+//   });
 }); 
 
 

@@ -69,10 +69,10 @@ special Euclidean group in 3 dimensions.
         * [.transform_vec_ip(vec)](#module_euclidean..Euclidean+transform_vec_ip) ⇒ <code>undefined</code>
         * [.untransform_vec(vec)](#module_euclidean..Euclidean+untransform_vec) ⇒ <code>Array.&lt;number&gt;</code>
         * [.untransform_vec_ip(vec)](#module_euclidean..Euclidean+untransform_vec_ip) ⇒ <code>undefined</code>
-        * [.transform_quat(quat)](#module_euclidean..Euclidean+transform_quat) ⇒ <code>UnitQuaternion</code>
-        * [.transform_quat_ip(quat)](#module_euclidean..Euclidean+transform_quat_ip) ⇒ <code>undefined</code>
-        * [.untransform_quat(quat)](#module_euclidean..Euclidean+untransform_quat) ⇒ <code>UnitQuaternion</code>
-        * [.untransform_quat_ip(quat)](#module_euclidean..Euclidean+untransform_quat_ip) ⇒ <code>undefined</code>
+        * [.orient_quat(quat)](#module_euclidean..Euclidean+orient_quat) ⇒ <code>UnitQuaternion</code>
+        * [.orient_quat_ip(quat)](#module_euclidean..Euclidean+orient_quat_ip) ⇒ <code>undefined</code>
+        * [.unorient_quat(quat)](#module_euclidean..Euclidean+unorient_quat) ⇒ <code>UnitQuaternion</code>
+        * [.unorient_quat_ip(quat)](#module_euclidean..Euclidean+unorient_quat_ip) ⇒ <code>undefined</code>
     * [~EuclideanReverse](#module_euclidean..EuclideanReverse)
 
 <a name="module_euclidean..Euclidean"></a>
@@ -101,10 +101,10 @@ is applied before the shift.
     * [.transform_vec_ip(vec)](#module_euclidean..Euclidean+transform_vec_ip) ⇒ <code>undefined</code>
     * [.untransform_vec(vec)](#module_euclidean..Euclidean+untransform_vec) ⇒ <code>Array.&lt;number&gt;</code>
     * [.untransform_vec_ip(vec)](#module_euclidean..Euclidean+untransform_vec_ip) ⇒ <code>undefined</code>
-    * [.transform_quat(quat)](#module_euclidean..Euclidean+transform_quat) ⇒ <code>UnitQuaternion</code>
-    * [.transform_quat_ip(quat)](#module_euclidean..Euclidean+transform_quat_ip) ⇒ <code>undefined</code>
-    * [.untransform_quat(quat)](#module_euclidean..Euclidean+untransform_quat) ⇒ <code>UnitQuaternion</code>
-    * [.untransform_quat_ip(quat)](#module_euclidean..Euclidean+untransform_quat_ip) ⇒ <code>undefined</code>
+    * [.orient_quat(quat)](#module_euclidean..Euclidean+orient_quat) ⇒ <code>UnitQuaternion</code>
+    * [.orient_quat_ip(quat)](#module_euclidean..Euclidean+orient_quat_ip) ⇒ <code>undefined</code>
+    * [.unorient_quat(quat)](#module_euclidean..Euclidean+unorient_quat) ⇒ <code>UnitQuaternion</code>
+    * [.unorient_quat_ip(quat)](#module_euclidean..Euclidean+unorient_quat_ip) ⇒ <code>undefined</code>
 
 <a name="new_module_euclidean..Euclidean_new"></a>
 
@@ -291,51 +291,74 @@ Undo a transform of a vector with this rotation and shift in place
 | --- | --- | --- |
 | vec | <code>Array.&lt;number&gt;</code> | a 3d vector to be untransformed in place |
 
-<a name="module_euclidean..Euclidean+transform_quat"></a>
+<a name="module_euclidean..Euclidean+orient_quat"></a>
 
-#### euclidean.transform\_quat(quat) ⇒ <code>UnitQuaternion</code>
-Transform an orientation quaternion with this coordinate rotation
+#### euclidean.orient\_quat(quat) ⇒ <code>UnitQuaternion</code>
+Transform an orientation quaternion's reference coordinate system
+
+In this construction, `quat` represents an orientation (ostensibly of an object in space).
+It represents the orientation in the sense that we pick a cooridinate represention for this 
+orientation called O (for example, x=right, y=forward, z=up on the object), and then pick a reference coordinate
+system A for which O is measured against, `quat` is then the rotation of the coordinate axes of A
+which will map them onto the coordinate axes O (A->O). `this` is a transformation from the 
+coordinate system A to a different coordinate system B. The result of `.orient_quat( quat )` is
+the quaternion which rotates the coordinate system B onto O (B->O), meaning that it represents
+the same orientation, but just referencing against a different "origin". See 
+`UnitQuaternion.with_reference` for details.
+
+Note, this is NOT the same thing as changing the cooridnate representation of the quaternion itself,
+which would be: rather than having x=right on the object, now I want x=up on the object, so give me
+the quaternion which represents this orientation, but with a different convention for how orientations
+are described by coordinate systems. See `UnitQuaternion.with_coordinate_convention` for more details.
 
 **Kind**: instance method of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
-**Returns**: <code>UnitQuaternion</code> - the transformed quaternion  
+**Returns**: <code>UnitQuaternion</code> - the quaternion representing the same orientation, but with the new reference coordinate
+                         system.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| quat | <code>UnitQuaternion</code> | the orientation quaternion to be transformed |
+| quat | <code>UnitQuaternion</code> | the quaternion representing an orientation for which the reference coordinate                                system should be changed. |
 
-<a name="module_euclidean..Euclidean+transform_quat_ip"></a>
+<a name="module_euclidean..Euclidean+orient_quat_ip"></a>
 
-#### euclidean.transform\_quat\_ip(quat) ⇒ <code>undefined</code>
-Transform an orientation quaternion with this coordinate rotation in place
+#### euclidean.orient\_quat\_ip(quat) ⇒ <code>undefined</code>
+Transform an orientation quaternion's reference coordinate system in place
 
-**Kind**: instance method of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| quat | <code>UnitQuaternion</code> | the orientation quaternion to be transformed in place |
-
-<a name="module_euclidean..Euclidean+untransform_quat"></a>
-
-#### euclidean.untransform\_quat(quat) ⇒ <code>UnitQuaternion</code>
-Undo a transform of an orientation quaternion with this coordinate rotation
-
-**Kind**: instance method of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
-**Returns**: <code>UnitQuaternion</code> - the untransformed quaternion  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| quat | <code>UnitQuaternion</code> | the orientation quaternion to be untransformed |
-
-<a name="module_euclidean..Euclidean+untransform_quat_ip"></a>
-
-#### euclidean.untransform\_quat\_ip(quat) ⇒ <code>undefined</code>
-Undo a transform of an orientation quaternion with this coordinate rotation in place
+see `.orient( ... )` for details
 
 **Kind**: instance method of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| quat | <code>UnitQuaternion</code> | the orientation quaternion to be untransformed in place |
+| quat | <code>unitquaternion</code> | the quaternion representing an orientation for which the reference coordinate                                system should be changed in place. |
+
+<a name="module_euclidean..Euclidean+unorient_quat"></a>
+
+#### euclidean.unorient\_quat(quat) ⇒ <code>UnitQuaternion</code>
+Undo the transform of an orientation quaternion's reference coordinate system
+
+See `.orient( ... )` for details
+
+**Kind**: instance method of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
+**Returns**: <code>UnitQuaternion</code> - the quaternion representing the same orientation, but with the new reference coordinate
+                         system.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| quat | <code>UnitQuaternion</code> | the quaternion representing an orientation for which the reference coordinate                                system should be unchanged. |
+
+<a name="module_euclidean..Euclidean+unorient_quat_ip"></a>
+
+#### euclidean.unorient\_quat\_ip(quat) ⇒ <code>undefined</code>
+undo the transform of an orientation quaternion's reference coordinate system in place
+
+see `.orient( ... )` for details
+
+**Kind**: instance method of [<code>Euclidean</code>](#module_euclidean..Euclidean)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| quat | <code>unitquaternion</code> | the quaternion representing an orientation for which the reference coordinate                                system should be unchanged in place. |
 
 <a name="module_euclidean..EuclideanReverse"></a>
 
@@ -358,12 +381,12 @@ A module for modeling networks of coordintate axes, and the transformations betw
         * [.connect_systems(first, tranform, second, [one_way])](#module_network..CoordinateNetwork+connect_systems) ⇒ <code>this</code>
         * [.compile()](#module_network..CoordinateNetwork+compile) ⇒ <code>this</code>
         * [.update(state)](#module_network..CoordinateNetwork+update) ⇒ <code>this</code>
-        * [.transform_quat(quat, start_name, end_name)](#module_network..CoordinateNetwork+transform_quat) ⇒ <code>UnitQuaternion</code>
-        * [.transform_quat_ip(quat, start_name, end_name)](#module_network..CoordinateNetwork+transform_quat_ip) ⇒ <code>undefined</code>
         * [.transform_vec(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec) ⇒ <code>Array.&lt;number&gt;</code>
         * [.transform_vec_ip(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec_ip) ⇒ <code>undefined</code>
         * [.get_affine(start_name, end_name)](#module_network..CoordinateNetwork+get_affine) ⇒ <code>Object</code>
         * [.get_homogeneous(start_name, end_name)](#module_network..CoordinateNetwork+get_homogeneous) ⇒ <code>Matrix</code>
+        * [.orient_quat(quat, start_name, end_name)](#module_network..CoordinateNetwork+orient_quat) ⇒ <code>UnitQuaternion</code>
+        * [.orient_quat_ip(quat, start_name, end_name)](#module_network..CoordinateNetwork+orient_quat_ip) ⇒ <code>UnitQuaternion</code>
 
 <a name="module_network..CoordinateNetwork"></a>
 
@@ -410,12 +433,12 @@ net.transform_vec([0,0,0], "A", "C"); // returns [2,0,0];
     * [.connect_systems(first, tranform, second, [one_way])](#module_network..CoordinateNetwork+connect_systems) ⇒ <code>this</code>
     * [.compile()](#module_network..CoordinateNetwork+compile) ⇒ <code>this</code>
     * [.update(state)](#module_network..CoordinateNetwork+update) ⇒ <code>this</code>
-    * [.transform_quat(quat, start_name, end_name)](#module_network..CoordinateNetwork+transform_quat) ⇒ <code>UnitQuaternion</code>
-    * [.transform_quat_ip(quat, start_name, end_name)](#module_network..CoordinateNetwork+transform_quat_ip) ⇒ <code>undefined</code>
     * [.transform_vec(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec) ⇒ <code>Array.&lt;number&gt;</code>
     * [.transform_vec_ip(vec, start_name, end_name)](#module_network..CoordinateNetwork+transform_vec_ip) ⇒ <code>undefined</code>
     * [.get_affine(start_name, end_name)](#module_network..CoordinateNetwork+get_affine) ⇒ <code>Object</code>
     * [.get_homogeneous(start_name, end_name)](#module_network..CoordinateNetwork+get_homogeneous) ⇒ <code>Matrix</code>
+    * [.orient_quat(quat, start_name, end_name)](#module_network..CoordinateNetwork+orient_quat) ⇒ <code>UnitQuaternion</code>
+    * [.orient_quat_ip(quat, start_name, end_name)](#module_network..CoordinateNetwork+orient_quat_ip) ⇒ <code>UnitQuaternion</code>
 
 <a name="new_module_network..CoordinateNetwork_new"></a>
 
@@ -467,34 +490,6 @@ Update the dynamic data for internal transformations
 | Param | Type | Description |
 | --- | --- | --- |
 | state | <code>Object</code> | object containing any relevent dynamic data for dynamic transformation objects |
-
-<a name="module_network..CoordinateNetwork+transform_quat"></a>
-
-#### coordinateNetwork.transform\_quat(quat, start_name, end_name) ⇒ <code>UnitQuaternion</code>
-Transform an orientation quaternion from `start` to `end`
-
-**Kind**: instance method of [<code>CoordinateNetwork</code>](#module_network..CoordinateNetwork)  
-**Returns**: <code>UnitQuaternion</code> - the orientation quaternion in the transformed
-coordinate system.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| quat | <code>UnitQuaternion</code> | the orientation quaternion to transform |
-| start_name | <code>string</code> | the name of the coordinate system that `quat` originates within |
-| end_name | <code>string</code> | the name of the coordinate system that `quat` should be transformed into |
-
-<a name="module_network..CoordinateNetwork+transform_quat_ip"></a>
-
-#### coordinateNetwork.transform\_quat\_ip(quat, start_name, end_name) ⇒ <code>undefined</code>
-Transform an orientation quaternion from `start` to `end` in place
-
-**Kind**: instance method of [<code>CoordinateNetwork</code>](#module_network..CoordinateNetwork)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| quat | <code>UnitQuaternion</code> | the orientation quaternion to transform in place |
-| start_name | <code>string</code> | the name of the coordinate system that `quat` originates within |
-| end_name | <code>string</code> | the name of the coordinate system that `quat` should be transformed into |
 
 <a name="module_network..CoordinateNetwork+transform_vec"></a>
 
@@ -584,6 +579,36 @@ then this method will fail
 | --- | --- | --- |
 | start_name | <code>string</code> | the name of the coordinate system that the  transform originates in |
 | end_name | <code>string</code> | the name of the coordinate system that the  transform ends in |
+
+<a name="module_network..CoordinateNetwork+orient_quat"></a>
+
+#### coordinateNetwork.orient\_quat(quat, start_name, end_name) ⇒ <code>UnitQuaternion</code>
+Transform an orientation quaternion from `start` to `end`
+
+**Kind**: instance method of [<code>CoordinateNetwork</code>](#module_network..CoordinateNetwork)  
+**Returns**: <code>UnitQuaternion</code> - the orientation quaternion in the transformed
+coordinate system.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| quat | <code>UnitQuaternion</code> | the orientation quaternion to transform |
+| start_name | <code>string</code> | the name of the coordinate system that `quat` originates within |
+| end_name | <code>string</code> | the name of the coordinate system that `quat` should be transformed into |
+
+<a name="module_network..CoordinateNetwork+orient_quat_ip"></a>
+
+#### coordinateNetwork.orient\_quat\_ip(quat, start_name, end_name) ⇒ <code>UnitQuaternion</code>
+Transform an orientation quaternion from `start` to `end` in place
+
+**Kind**: instance method of [<code>CoordinateNetwork</code>](#module_network..CoordinateNetwork)  
+**Returns**: <code>UnitQuaternion</code> - the orientation quaternion in the transformed
+coordinate system.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| quat | <code>UnitQuaternion</code> | the orientation quaternion to transform |
+| start_name | <code>string</code> | the name of the coordinate system that `quat` originates within |
+| end_name | <code>string</code> | the name of the coordinate system that `quat` should be transformed into |
 
 <a name="module_quaternion"></a>
 
@@ -1313,10 +1338,10 @@ Transformation objects for coordinate transformations of 3d vectors
         * [.untransform_vec(vec)](#module_transform..Transform+untransform_vec) ⇒ <code>Array.&lt;number&gt;</code>
         * [.transform_vec_ip(vec)](#module_transform..Transform+transform_vec_ip) ⇒ <code>undefined</code>
         * [.untransform_vec_ip(vec)](#module_transform..Transform+untransform_vec_ip) ⇒ <code>undefined</code>
-        * [.transform_quat(quat)](#module_transform..Transform+transform_quat) ⇒ <code>UnitQuaternion</code>
-        * [.untransform_quat(quat)](#module_transform..Transform+untransform_quat) ⇒ <code>UnitQuaternion</code>
-        * [.transform_quat_ip(quat)](#module_transform..Transform+transform_quat_ip) ⇒ <code>undefined</code>
-        * [.untransform_quat_ip(quat)](#module_transform..Transform+untransform_quat_ip) ⇒ <code>undefined</code>
+        * [.orient_quat(quat)](#module_transform..Transform+orient_quat) ⇒ <code>UnitQuaternion</code>
+        * [.unorient_quat(quat)](#module_transform..Transform+unorient_quat) ⇒ <code>UnitQuaternion</code>
+        * [.orient_quat_ip(quat)](#module_transform..Transform+orient_quat_ip) ⇒ <code>undefined</code>
+        * [.unorient_quat_ip(quat)](#module_transform..Transform+unorient_quat_ip) ⇒ <code>undefined</code>
     * [~EuclideanReverseStaticTransform](#module_transform..EuclideanReverseStaticTransform)
         * [new EuclideanReverseStaticTransform(qvec, vec)](#new_module_transform..EuclideanReverseStaticTransform_new)
     * [~EuclideanStaticTransform](#module_transform..EuclideanStaticTransform)
@@ -1360,10 +1385,10 @@ of any other method calls
     * [.untransform_vec(vec)](#module_transform..Transform+untransform_vec) ⇒ <code>Array.&lt;number&gt;</code>
     * [.transform_vec_ip(vec)](#module_transform..Transform+transform_vec_ip) ⇒ <code>undefined</code>
     * [.untransform_vec_ip(vec)](#module_transform..Transform+untransform_vec_ip) ⇒ <code>undefined</code>
-    * [.transform_quat(quat)](#module_transform..Transform+transform_quat) ⇒ <code>UnitQuaternion</code>
-    * [.untransform_quat(quat)](#module_transform..Transform+untransform_quat) ⇒ <code>UnitQuaternion</code>
-    * [.transform_quat_ip(quat)](#module_transform..Transform+transform_quat_ip) ⇒ <code>undefined</code>
-    * [.untransform_quat_ip(quat)](#module_transform..Transform+untransform_quat_ip) ⇒ <code>undefined</code>
+    * [.orient_quat(quat)](#module_transform..Transform+orient_quat) ⇒ <code>UnitQuaternion</code>
+    * [.unorient_quat(quat)](#module_transform..Transform+unorient_quat) ⇒ <code>UnitQuaternion</code>
+    * [.orient_quat_ip(quat)](#module_transform..Transform+orient_quat_ip) ⇒ <code>undefined</code>
+    * [.unorient_quat_ip(quat)](#module_transform..Transform+unorient_quat_ip) ⇒ <code>undefined</code>
 
 <a name="module_transform..Transform+update"></a>
 
@@ -1447,9 +1472,9 @@ Note, the provided vector is mutated by this method.
 | --- | --- | --- |
 | vec | <code>Array.&lt;number&gt;</code> | a 3d vector to untransform in place |
 
-<a name="module_transform..Transform+transform_quat"></a>
+<a name="module_transform..Transform+orient_quat"></a>
 
-#### transform.transform\_quat(quat) ⇒ <code>UnitQuaternion</code>
+#### transform.orient\_quat(quat) ⇒ <code>UnitQuaternion</code>
 Transform an orientation quaternion
 
 **Kind**: instance method of [<code>Transform</code>](#module_transform..Transform)  
@@ -1459,9 +1484,9 @@ Transform an orientation quaternion
 | --- | --- | --- |
 | quat | <code>UnitQuaternion</code> | an orientation quaternion to transform |
 
-<a name="module_transform..Transform+untransform_quat"></a>
+<a name="module_transform..Transform+unorient_quat"></a>
 
-#### transform.untransform\_quat(quat) ⇒ <code>UnitQuaternion</code>
+#### transform.unorient\_quat(quat) ⇒ <code>UnitQuaternion</code>
 Undo a transform of an orientation quaternion
 
 **Kind**: instance method of [<code>Transform</code>](#module_transform..Transform)  
@@ -1471,9 +1496,9 @@ Undo a transform of an orientation quaternion
 | --- | --- | --- |
 | quat | <code>UnitQuaternion</code> | an orientation quaternion to untransform |
 
-<a name="module_transform..Transform+transform_quat_ip"></a>
+<a name="module_transform..Transform+orient_quat_ip"></a>
 
-#### transform.transform\_quat\_ip(quat) ⇒ <code>undefined</code>
+#### transform.orient\_quat\_ip(quat) ⇒ <code>undefined</code>
 Transform an orientation quaternion in place
 
 Note, the provided quaternion is mutated by this method.
@@ -1484,9 +1509,9 @@ Note, the provided quaternion is mutated by this method.
 | --- | --- | --- |
 | quat | <code>UnitQuaternion</code> | an orientation quaternion to transform |
 
-<a name="module_transform..Transform+untransform_quat_ip"></a>
+<a name="module_transform..Transform+unorient_quat_ip"></a>
 
-#### transform.untransform\_quat\_ip(quat) ⇒ <code>undefined</code>
+#### transform.unorient\_quat\_ip(quat) ⇒ <code>undefined</code>
 Undo a transform of an orientation quaternion in place
 
 Note, the provided quaternion is mutated by this method.

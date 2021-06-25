@@ -111,20 +111,20 @@ describe("Euclidean methods", () => {
     done();
   });
 
-  // FIXME : decide on how to handle orient, then fix me
-  // let qsuite = [
-  //   [ [isqrt2, isqrt2, 0, 0] , [isqrt2, isqrt2, 0, 0] ]
-  // ]
-  // let e2 = (new Euclidean()).set_vecs( [ isqrt2, isqrt2, 0, 0 ], [ 0, 0, 0 ] );
-  // let q, q2;
-  // it("`orient` works", (done) => {
-  //   for ( let [ qvv, exp ] of qsuite ) {
-  //     q = UQ.from_vec( qvv );
-  //     q2 = e2.orient( q );
-  //     vec_equal( q2.qvec, exp, `fail: t(${q.toString()}) -> ${q2.toString()}, should be ${exp}`);
-  //   }
-  //   done();
-  // });
+  let qsuite = [
+    [ [isqrt2, isqrt2, 0, 0] , [1, 0, 0, 0] ],
+    [ [isqrt2, 0, isqrt2, 0] , [0.5, -0.5, 0.5, -0.5] ]
+  ]
+  let e2 = (new Euclidean()).set_vecs( [ isqrt2, isqrt2, 0, 0 ], [ 0, 0, 0 ] );
+  let q, q2;
+  it("`orient` works", (done) => {
+    for ( let [ qvv, exp ] of qsuite ) {
+      q = UQ.from_vec( qvv );
+      q2 = e2.orient_quat( q );
+      vec_equal( q2.qvec, exp, `fail: t(${q.toString()}) -> ${q2.toString()}, should be ${exp}`);
+    }
+    done();
+  });
 
 
 });
@@ -236,33 +236,33 @@ describe("Euclidean Tranformations Rotate Coordinate Systems", () => {
     
     // Test referecing and coordinate convetions in the same direction
     let q = UQ.from_axis(0.1, [1,0,0]);
-    let q2 = e.orient(q);
+    let q2 = e.orient_quat(q);
     vec_equal(q2.qvec, [ 1, 0, 0, 0 ], "fail same direction");
 
     // Test referencing and coordiante conventions in different directions
     e = (new Euclidean()).set_vecs([isqrt2, -isqrt2, 0, 0], [ 0, 0, 0]); // rotation -90 about x
     q = UQ.from_axis(Math.PI/2, [0,1,0]) // rotate 90 about y
-    q2 = e.orient( q ); // should be "undo e.quat, then do q" rotate 120 about {1,1,1}
+    q2 = e.orient_quat( q ); // should be "undo e.quat, then do q" rotate 120 about {1,1,1}
     vec_equal( q2.qvec, [ 0.5, 0.5, 0.5, 0.5 ], "fail different directions");
     done();
   });
 
-  it("Transforming quaternions applies funky wraper thing", (done) => {
-
-    let cos = Math.cos(0.1/2.0);
-    let sin = Math.sin(0.1/2.0);
-    let e = (new Euclidean()).set_vecs([cos, sin, 0, 0 ], [0, 0, 0]);
-    
-    // Test referecing and coordinate convetions in the same direction
-    let q = UQ.from_axis(0.1, [1,0,0]);
-    let q2 = e.transform_quat(q);
-    vec_equal(q2.qvec, [ Math.cos(0.1/2), Math.sin(0.1/2), 0, 0 ], "fail same directions");
-
-    // Test referencing and coordiante conventions in different directions
-    e = (new Euclidean()).set_vecs([isqrt2, -isqrt2, 0, 0], [ 0, 0, 0]); // rotation -90 about x
-    q = UQ.from_axis(Math.PI/2, [0,1,0]) // rotate 90 about y
-    q2 = e.transform_quat( q ); // should be "undo e.quat, then do q, then redo e.quat" = 90 about z
-    vec_equal( q2.qvec, [ isqrt2, 0, 0, isqrt2 ], "fail different directions");
-    done();
-  });
+//   it("Transforming quaternions applies funky wraper thing", (done) => {
+// 
+//     let cos = Math.cos(0.1/2.0);
+//     let sin = Math.sin(0.1/2.0);
+//     let e = (new Euclidean()).set_vecs([cos, sin, 0, 0 ], [0, 0, 0]);
+//     
+//     // Test referecing and coordinate convetions in the same direction
+//     let q = UQ.from_axis(0.1, [1,0,0]);
+//     let q2 = e.transform_quat(q);
+//     vec_equal(q2.qvec, [ Math.cos(0.1/2), Math.sin(0.1/2), 0, 0 ], "fail same directions");
+// 
+//     // Test referencing and coordiante conventions in different directions
+//     e = (new Euclidean()).set_vecs([isqrt2, -isqrt2, 0, 0], [ 0, 0, 0]); // rotation -90 about x
+//     q = UQ.from_axis(Math.PI/2, [0,1,0]) // rotate 90 about y
+//     q2 = e.transform_quat( q ); // should be "undo e.quat, then do q, then redo e.quat" = 90 about z
+//     vec_equal( q2.qvec, [ isqrt2, 0, 0, isqrt2 ], "fail different directions");
+//     done();
+//   });
 });
