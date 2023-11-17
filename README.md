@@ -280,6 +280,8 @@ The author welcomes any feedback, pull requests, feature request, and forks!
 
 # TODO
  - Finish commenting the pinhole camera module
+ - Add methods to quaternion module for construction based on vectors: i.e. 'quat which rotates vec1 onto vec2 about a perpendicular',
+   or 'quat which maps a pair of perpendicular unit vectors onto a different pair of perpendicular unit vectors'
  - Consider removing `.transform_quat` from the transform module, since is is pretty niche
  - Should in place transformations return the mutated object, or `undefined`? c.f. `Euclidean.transform_vec_ip`
  - Should the quaternion module just be a separate npm pacakge?

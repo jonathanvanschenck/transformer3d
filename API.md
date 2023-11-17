@@ -647,6 +647,7 @@ group in 3 dimensions.
             * [.mult(other)](#module_quaternion..UnitQuaternion+mult) ⇒ <code>UnitQuaternion</code>
             * [.after(other)](#module_quaternion..UnitQuaternion+after) ⇒ <code>UnitQuaternion</code>
             * [.before(other)](#module_quaternion..UnitQuaternion+before) ⇒ <code>UnitQuaternion</code>
+            * [.inv()](#module_quaternion..UnitQuaternion+inv) ⇒ <code>UnitQuaternion</code>
             * [.with_reference(other)](#module_quaternion..UnitQuaternion+with_reference) ⇒ <code>UnitQuaternion</code>
             * [.without_reference(other)](#module_quaternion..UnitQuaternion+without_reference) ⇒ <code>UnitQuaternion</code>
             * [.with_coordinate_convention(other)](#module_quaternion..UnitQuaternion+with_coordinate_convention) ⇒ <code>UnitQuaternion</code>
@@ -698,6 +699,7 @@ A quaternion class for rotating 3d vectors
         * [.mult(other)](#module_quaternion..UnitQuaternion+mult) ⇒ <code>UnitQuaternion</code>
         * [.after(other)](#module_quaternion..UnitQuaternion+after) ⇒ <code>UnitQuaternion</code>
         * [.before(other)](#module_quaternion..UnitQuaternion+before) ⇒ <code>UnitQuaternion</code>
+        * [.inv()](#module_quaternion..UnitQuaternion+inv) ⇒ <code>UnitQuaternion</code>
         * [.with_reference(other)](#module_quaternion..UnitQuaternion+with_reference) ⇒ <code>UnitQuaternion</code>
         * [.without_reference(other)](#module_quaternion..UnitQuaternion+without_reference) ⇒ <code>UnitQuaternion</code>
         * [.with_coordinate_convention(other)](#module_quaternion..UnitQuaternion+with_coordinate_convention) ⇒ <code>UnitQuaternion</code>
@@ -1010,6 +1012,13 @@ by `other`.
 | --- | --- | --- |
 | other | <code>UnitQuaternion</code> | the 'post-applied' rotation |
 
+<a name="module_quaternion..UnitQuaternion+inv"></a>
+
+#### unitQuaternion.inv() ⇒ <code>UnitQuaternion</code>
+Get the inverse of this quaternion
+
+**Kind**: instance method of [<code>UnitQuaternion</code>](#module_quaternion..UnitQuaternion)  
+**Returns**: <code>UnitQuaternion</code> - The inverse of `this`  
 <a name="module_quaternion..UnitQuaternion+with_reference"></a>
 
 #### unitQuaternion.with\_reference(other) ⇒ <code>UnitQuaternion</code>
